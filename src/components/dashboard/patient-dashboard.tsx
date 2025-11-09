@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { MessageCircle, PlusCircle, Video, LineChart } from "lucide-react";
+import { MessageCircle, PlusCircle, Video, BrainCircuit, HeartPulse, Droplets, Activity } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -25,9 +25,9 @@ const upcomingAppointments = [
 
 export default function PatientDashboard() {
   return (
-    <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-        <div className="xl:col-span-2">
-            <h1 className="text-3xl font-bold font-headline mb-4">Welcome Back, Patient!</h1>
+    <div className="grid gap-4 md:gap-8 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+            <h1 className="text-3xl font-bold font-headline mb-4">Welcome Back, Aarav!</h1>
             <div className="grid gap-4 md:grid-cols-2">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -64,7 +64,7 @@ export default function PatientDashboard() {
                 <Card className="md:col-span-2">
                      <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium">Symptom Analysis</CardTitle>
-                        <LineChart className="h-4 w-4 text-muted-foreground" />
+                        <BrainCircuit className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <p className="text-xs text-muted-foreground">
@@ -80,33 +80,68 @@ export default function PatientDashboard() {
             </div>
         </div>
 
-        <Card className="xl:col-span-1">
-            <CardHeader>
-                <CardTitle>Upcoming Appointments</CardTitle>
-                <CardDescription>You have {upcomingAppointments.length} upcoming appointments.</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4">
-                {upcomingAppointments.map((appt, index) => (
-                    <div key={index} className="flex items-center gap-4">
-                        <Avatar className="h-9 w-9">
-                            <AvatarImage src={appt.avatar} alt={appt.doctor} />
-                            <AvatarFallback>{appt.doctor.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                        </Avatar>
-                        <div className="grid gap-1">
-                            <p className="text-sm font-medium leading-none">{appt.doctor}</p>
-                            <p className="text-sm text-muted-foreground">{appt.specialty}</p>
-                            <p className="text-xs text-muted-foreground">{new Date(appt.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} at {appt.time}</p>
+        <div className="lg:col-span-1 flex flex-col gap-8">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Upcoming Appointments</CardTitle>
+                    <CardDescription>You have {upcomingAppointments.length} upcoming appointments.</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                    {upcomingAppointments.map((appt, index) => (
+                        <div key={index} className="flex items-center gap-4">
+                            <Avatar className="h-9 w-9">
+                                <AvatarImage src={appt.avatar} alt={appt.doctor} />
+                                <AvatarFallback>{appt.doctor.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                            </Avatar>
+                            <div className="grid gap-1">
+                                <p className="text-sm font-medium leading-none">{appt.doctor}</p>
+                                <p className="text-sm text-muted-foreground">{appt.specialty}</p>
+                                <p className="text-xs text-muted-foreground">{new Date(appt.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} at {appt.time}</p>
+                            </div>
+                            <Button asChild variant="outline" size="icon" className="ml-auto">
+                                <Link href="/video-call" target="_blank">
+                                    <Video className="h-4 w-4" />
+                                    <span className="sr-only">Start Video Call</span>
+                                </Link>
+                            </Button>
                         </div>
-                        <Button asChild variant="outline" size="icon" className="ml-auto">
-                            <Link href="/video-call" target="_blank">
-                                <Video className="h-4 w-4" />
-                                <span className="sr-only">Start Video Call</span>
-                            </Link>
-                        </Button>
+                    ))}
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Health Vitals</CardTitle>
+                    <CardDescription>Your latest recorded metrics.</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-primary/10 rounded-full"><HeartPulse className="h-5 w-5 text-primary" /></div>
+                            <span className="font-medium">Blood Pressure</span>
+                        </div>
+                        <span className="font-bold text-lg">120/80 <span className="text-sm font-normal text-muted-foreground">mmHg</span></span>
                     </div>
-                ))}
-            </CardContent>
-        </Card>
+                     <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-accent/20 rounded-full"><Activity className="h-5 w-5 text-accent-foreground" /></div>
+                            <span className="font-medium">Heart Rate</span>
+                        </div>
+                        <span className="font-bold text-lg">72 <span className="text-sm font-normal text-muted-foreground">bpm</span></span>
+                    </div>
+                     <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                             <div className="p-2 bg-destructive/10 rounded-full"><Droplets className="h-5 w-5 text-destructive" /></div>
+                            <span className="font-medium">Blood Sugar</span>
+                        </div>
+                        <span className="font-bold text-lg">95 <span className="text-sm font-normal text-muted-foreground">mg/dL</span></span>
+                    </div>
+                </CardContent>
+                <CardFooter>
+                    <Button variant="ghost" size="sm" className="w-full">View History</Button>
+                </CardFooter>
+            </Card>
+        </div>
     </div>
   );
 }

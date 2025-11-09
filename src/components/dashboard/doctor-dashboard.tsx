@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowUpRight, Users, CalendarCheck, BarChart, MessageCircle } from "lucide-react";
+import { ArrowUpRight, Users, CalendarCheck, BarChart, MessageCircle, BrainCircuit } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ResponsiveContainer, BarChart as BarGraph, XAxis, YAxis, Tooltip, Bar, PieChart, Pie, Cell, Legend, CartesianGrid } from 'recharts';
@@ -76,7 +76,7 @@ export default function DoctorDashboard() {
              <Card>
                  <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-sm font-medium">Symptom Analysis</CardTitle>
-                    <BarChart className="h-4 w-4 text-muted-foreground" />
+                    <BrainCircuit className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                     <p className="text-xs text-muted-foreground mb-4">AI-powered tool to assist in diagnosis.</p>
