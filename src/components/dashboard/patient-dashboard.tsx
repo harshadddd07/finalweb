@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { MessageCircle, PlusCircle, Video, BrainCircuit, HeartPulse, Droplets, Activity } from "lucide-react";
+import { MessageCircle, PlusCircle, Video, BrainCircuit, HeartPulse, Droplets, Activity, CreditCard, User, ShieldAlert, Link as LinkIcon } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -22,6 +22,12 @@ const upcomingAppointments = [
     avatar: "https://picsum.photos/seed/doc2/100/100"
   },
 ];
+
+const quickLinks = [
+    { href: "/billing", label: "View Billing", icon: CreditCard },
+    { href: "/profile", label: "Manage Profile", icon: User },
+    { href: "/emergency", label: "Emergency", icon: ShieldAlert },
+]
 
 export default function PatientDashboard() {
   return (
@@ -140,6 +146,22 @@ export default function PatientDashboard() {
                 <CardFooter>
                     <Button variant="ghost" size="sm" className="w-full">View History</Button>
                 </CardFooter>
+            </Card>
+             <Card>
+                <CardHeader>
+                    <CardTitle>Quick Links</CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-1 gap-2">
+                    {quickLinks.map((link) => {
+                        const Icon = link.icon;
+                        return (
+                        <Link href={link.href} key={link.label} className="flex items-center p-2 rounded-md hover:bg-muted -mx-2">
+                           <Icon className="mr-3 h-5 w-5 text-muted-foreground" />
+                           <span className="text-sm font-medium">{link.label}</span>
+                           <LinkIcon className="ml-auto h-4 w-4 text-muted-foreground/70" />
+                        </Link>
+                    )})}
+                </CardContent>
             </Card>
         </div>
     </div>

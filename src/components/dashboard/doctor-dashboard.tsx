@@ -47,6 +47,18 @@ const pieChartConfig = {
   "60+": { label: "60+", color: "hsl(var(--chart-4))" },
 } satisfies ChartConfig;
 
+const appointmentStatusData = [
+    { name: 'Confirmed', value: 38, fill: "hsl(var(--chart-1))" },
+    { name: 'Pending', value: 8, fill: "hsl(var(--chart-2))" },
+    { name: 'Canceled', value: 3, fill: "hsl(var(--chart-5))" },
+]
+const appointmentStatusConfig = {
+    value: { label: 'Appointments' },
+    Confirmed: { label: 'Confirmed', color: 'hsl(var(--chart-1))' },
+    Pending: { label: 'Pending', color: 'hsl(var(--chart-2))' },
+    Canceled: { label: 'Canceled', color: 'hsl(var(--chart-5))' },
+} satisfies ChartConfig
+
 
 export default function DoctorDashboard() {
   return (
@@ -99,8 +111,8 @@ export default function DoctorDashboard() {
             </Card>
         </div>
 
-        <div className="grid gap-4 md:gap-8 lg:grid-cols-2">
-            <Card>
+        <div className="grid gap-4 md:gap-8 lg:grid-cols-3">
+            <Card className="lg:col-span-2">
                 <CardHeader>
                     <CardTitle>Appointments This Week</CardTitle>
                 </CardHeader>
@@ -119,6 +131,27 @@ export default function DoctorDashboard() {
                     </ChartContainer>
                 </CardContent>
             </Card>
+            <Card>
+                <CardHeader>
+                    <CardTitle>Appointment Status</CardTitle>
+                </CardHeader>
+                <CardContent className="h-[300px] flex items-center justify-center">
+                   <ChartContainer config={appointmentStatusConfig}>
+                        <PieChart>
+                            <Tooltip content={<ChartTooltipContent nameKey="name" />} />
+                             <Pie data={appointmentStatusData} dataKey="value" nameKey="name" innerRadius={50} strokeWidth={5}>
+                                {appointmentStatusData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.fill} stroke={entry.fill} />
+                                ))}
+                            </Pie>
+                            <Legend />
+                        </PieChart>
+                    </ChartContainer>
+                </CardContent>
+            </Card>
+        </div>
+
+        <div className="grid gap-4 md:gap-8 lg:grid-cols-2">
              <Card>
                 <CardHeader>
                     <CardTitle>Patient Demographics</CardTitle>
@@ -142,53 +175,52 @@ export default function DoctorDashboard() {
                     </ChartContainer>
                 </CardContent>
             </Card>
-        </div>
-
-        <Card>
-            <CardHeader className="flex flex-row items-center">
-                <div className="grid gap-2">
-                    <CardTitle>New Appointment Requests</CardTitle>
-                    <CardDescription>Patients waiting for confirmation.</CardDescription>
-                </div>
-                <Button asChild size="sm" className="ml-auto gap-1">
-                    <Link href="/appointments">View All <ArrowUpRight className="h-4 w-4" /></Link>
-                </Button>
-            </CardHeader>
-            <CardContent>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Patient</TableHead>
-                            <TableHead>Reason for Visit</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {appointmentRequests.map((req) => (
-                            <TableRow key={req.email}>
-                                <TableCell>
-                                    <div className="flex items-center gap-3">
-                                        <Avatar className="h-9 w-9">
-                                            <AvatarImage src={req.avatar} alt={req.name} />
-                                            <AvatarFallback>{req.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                                        </Avatar>
-                                        <div>
-                                            <div className="font-medium">{req.name}</div>
-                                            <div className="text-sm text-muted-foreground">{req.email}</div>
-                                        </div>
-                                    </div>
-                                </TableCell>
-                                <TableCell>{req.reason}</TableCell>
-                                <TableCell className="text-right">
-                                    <Button variant="outline" size="sm" className="mr-2">Approve</Button>
-                                    <Button variant="destructive" size="sm">Decline</Button>
-                                </TableCell>
+            <Card>
+                <CardHeader className="flex flex-row items-center">
+                    <div className="grid gap-2">
+                        <CardTitle>New Appointment Requests</CardTitle>
+                        <CardDescription>Patients waiting for confirmation.</CardDescription>
+                    </div>
+                    <Button asChild size="sm" className="ml-auto gap-1">
+                        <Link href="/appointments">View All <ArrowUpRight className="h-4 w-4" /></Link>
+                    </Button>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Patient</TableHead>
+                                <TableHead>Reason for Visit</TableHead>
+                                <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </CardContent>
-        </Card>
+                        </TableHeader>
+                        <TableBody>
+                            {appointmentRequests.map((req) => (
+                                <TableRow key={req.email}>
+                                    <TableCell>
+                                        <div className="flex items-center gap-3">
+                                            <Avatar className="h-9 w-9">
+                                                <AvatarImage src={req.avatar} alt={req.name} />
+                                                <AvatarFallback>{req.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                                            </Avatar>
+                                            <div>
+                                                <div className="font-medium">{req.name}</div>
+                                                <div className="text-sm text-muted-foreground">{req.email}</div>
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>{req.reason}</TableCell>
+                                    <TableCell className="text-right">
+                                        <Button variant="outline" size="sm" className="mr-2">Approve</Button>
+                                        <Button variant="destructive" size="sm">Decline</Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+        </div>
     </div>
   );
 }
