@@ -15,7 +15,7 @@ const contacts = [
   { id: 3, name: 'Dr. Samuel Green', specialty: 'Dermatologist', avatarId: 'avatar-3', online: true },
 ];
 
-const messages = [
+const initialMessages = [
   { id: 1, sender: 'Dr. Evelyn Reed', text: 'Hello, how are you feeling today?', time: '10:30 AM', sent: false },
   { id: 2, sender: 'Me', text: 'I am feeling a bit better, thank you for asking!', time: '10:31 AM', sent: true },
   { id: 3, sender: 'Dr. Evelyn Reed', text: 'That is great to hear. Remember to take your medication as prescribed.', time: '10:32 AM', sent: false },
@@ -25,6 +25,27 @@ export default function ChatPage() {
     const [isVideoCall, setVideoCall] = useState(false);
     const mainVideo = PlaceHolderImages.find(img => img.id === 'video-call-main');
     const selfVideo = PlaceHolderImages.find(img => img.id === 'video-call-self');
+    const [messages, setMessages] = useState(initialMessages);
+    const [newMessage, setNewMessage] = useState('');
+
+    const handleSendMessage = () => {
+        if (newMessage.trim() === '') return;
+        const newMsg = {
+            id: messages.length + 1,
+            sender: 'Me',
+            text: newMessage,
+            time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+            sent: true,
+        };
+        setMessages([...messages, newMsg]);
+        setNewMessage('');
+    };
+
+    const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            handleSendMessage();
+        }
+    }
 
 
   return (
@@ -113,12 +134,18 @@ export default function ChatPage() {
                     </div>
                     <div className="p-4 border-t">
                         <div className="relative">
-                            <Input placeholder="Type a message..." className="pr-24" />
+                            <Input
+                                placeholder="Type a message..."
+                                className="pr-24"
+                                value={newMessage}
+                                onChange={(e) => setNewMessage(e.target.value)}
+                                onKeyPress={handleKeyPress}
+                            />
                             <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
                             <Button variant="ghost" size="icon">
                                 <Paperclip className="h-5 w-5" />
                             </Button>
-                            <Button variant="ghost" size="icon">
+                            <Button variant="ghost" size="icon" onClick={handleSendMessage}>
                                 <Send className="h-5 w-5" />
                             </Button>
                             </div>
