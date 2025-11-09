@@ -1,27 +1,37 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { AppLayout } from '@/components/layout/app-layout';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Paperclip, Phone, Send, Video } from 'lucide-react';
+import { Paperclip, Phone, Send, Video, Bot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Sidebar, SidebarContent, SidebarHeader, SidebarTrigger } from '@/components/ui/sidebar';
+import { getChatResponse } from '@/ai/flows/chat-flow';
+import { useToast } from '@/hooks/use-toast';
 
 const doctors = [
     { id: 1, name: "Dr. Priya Sharma", specialty: "Cardiologist", avatar: "https://picsum.photos/seed/doc1/100/100", online: true },
     { id: 2, name: "Dr. Rahul Gupta", specialty: "Dermatologist", avatar: "https://picsum.photos/seed/doc2/100/100", online: false },
     { id: 3, name: "Dr. Anjali Desai", specialty: "Pediatrician", avatar: "https://picsum.photos/seed/doc3/100/100", online: true },
-    { id: 4, name: "Dr. Vikram Singh", specialty: "Neurologist", avatar: "https://picsum.photos/seed/doc4/100/100", online: true },
+    { id: 4, name: "Dr. Vikram Singh", specialty: "Neurologist", avatar: "https://picsum.photos/seed/doc4/100/100", online: false },
 ];
 
-const initialMessages = [
-  { id: 1, sender: 'Dr. Priya Sharma', text: 'Hello, how are you feeling today?', time: '10:30 AM', sent: false },
-  { id: 2, sender: 'Me', text: 'I am feeling a bit better, thank you for asking!', time: '10:31 AM', sent: true },
-  { id: 3, sender: 'Dr. Priya Sharma', text: 'That is great to hear. Remember to take your medication as prescribed.', time: '10:32 AM', sent: false },
-];
+const initialMessages: Record<number, { id: number; sender: string; text: string; time: string; sent: boolean }[]> = {
+  1: [
+    { id: 1, sender: 'Dr. Priya Sharma', text: 'Hello, how are you feeling today?', time: '10:30 AM', sent: false },
+    { id: 2, sender: 'Me', text: 'I am feeling a bit better, thank you for asking!', time: '10:31 AM', sent: true },
+    { id: 3, sender: 'Dr. Priya Sharma', text: 'That is great to hear. Remember to take your medication as prescribed.', time: '10:32 AM', sent: false },
+  ],
+  2: [
+      { id: 1, sender: 'AI Assistant', text: 'Hello! I am your AI Medical Assistant. Dr. Rahul Gupta is currently offline, but I am here to help with any general questions you may have.', time: '11:00 AM', sent: false },
+  ],
+  3: [],
+  4: [],
+};
+
 
 function DoctorList({selectedDoctor, onSelectDoctor}: {selectedDoctor: any, onSelectDoctor: (doctor: any) => void}) {
     return(
@@ -59,18 +69,62 @@ export default function ChatPage() {
     const [messages, setMessages] = useState(initialMessages);
     const [newMessage, setNewMessage] = useState('');
     const [selectedDoctor, setSelectedDoctor] = useState(doctors[0]);
+    const [isTyping, setIsTyping] = useState(false);
+    const chatContainerRef = useRef<HTMLDivElement>(null);
+    const { toast } = useToast();
 
-    const handleSendMessage = () => {
+    const currentMessages = messages[selectedDoctor.id] || [];
+
+    useEffect(() => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+    }, [currentMessages, isTyping]);
+
+
+    const handleSendMessage = async () => {
         if (newMessage.trim() === '') return;
-        const newMsg = {
-            id: messages.length + 1,
+
+        const userMessage = {
+            id: currentMessages.length + 1,
             sender: 'Me',
             text: newMessage,
             time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
             sent: true,
         };
-        setMessages([...messages, newMsg]);
+        
+        const updatedMessages = [...currentMessages, userMessage];
+        setMessages(prev => ({ ...prev, [selectedDoctor.id]: updatedMessages }));
         setNewMessage('');
+
+        if (!selectedDoctor.online) {
+            setIsTyping(true);
+            try {
+                const aiResponse = await getChatResponse({
+                    history: updatedMessages.map(m => ({ text: m.text, sent: m.sent })),
+                    newMessage: newMessage,
+                });
+                
+                const aiMessage = {
+                    id: updatedMessages.length + 1,
+                    sender: 'AI Assistant',
+                    text: aiResponse,
+                    time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+                    sent: false,
+                };
+
+                setMessages(prev => ({ ...prev, [selectedDoctor.id]: [...updatedMessages, aiMessage] }));
+
+            } catch (error) {
+                 toast({
+                    variant: "destructive",
+                    title: "AI Chat Error",
+                    description: "Could not get a response from the AI assistant. Please try again.",
+                });
+            } finally {
+                setIsTyping(false);
+            }
+        }
     };
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -98,7 +152,11 @@ export default function ChatPage() {
                     </Avatar>
                     <div>
                         <p className="text-sm font-medium">{selectedDoctor.name}</p>
-                        <p className={`text-xs ${selectedDoctor.online ? 'text-green-500' : 'text-muted-foreground'}`}>{selectedDoctor.online ? 'Online' : 'Offline'}</p>
+                         <div className="flex items-center gap-1.5">
+                            <div className={cn("w-2 h-2 rounded-full", selectedDoctor.online ? "bg-green-500" : "bg-gray-400")} />
+                            <p className={`text-xs ${selectedDoctor.online ? 'text-green-600' : 'text-muted-foreground'}`}>{selectedDoctor.online ? 'Online' : 'Offline'}</p>
+                            {!selectedDoctor.online && <Bot className="w-3 h-3 text-muted-foreground" />}
+                        </div>
                     </div>
                 </div>
                 <div className="ml-auto flex items-center gap-2">
@@ -114,27 +172,43 @@ export default function ChatPage() {
             </div>
 
             <div className="flex-1 flex flex-col overflow-hidden">
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                {messages.map((message) => (
-                    <div key={message.id} className={`flex items-end gap-2 ${message.sent ? 'justify-end' : ''}`}>
+                <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+                {currentMessages.map((message) => (
+                    <div key={message.id} className={cn('flex items-end gap-2', message.sent ? 'justify-end' : '')}>
                         {!message.sent && (
-                        <Avatar className="w-8 h-8">
-                            <AvatarImage src={selectedDoctor.avatar} />
-                            <AvatarFallback>{selectedDoctor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                        </Avatar>
+                           <Avatar className="w-8 h-8">
+                                <AvatarImage src={message.sender === 'AI Assistant' ? undefined : selectedDoctor.avatar} />
+                                <AvatarFallback>
+                                    {message.sender === 'AI Assistant' ? <Bot className="w-5 h-5" /> : selectedDoctor.name.split(' ').map(n => n[0]).join('')}
+                                </AvatarFallback>
+                            </Avatar>
                         )}
-                        <div className={`rounded-lg p-3 max-w-xs lg:max-w-md ${message.sent ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
-                        <p className="text-sm">{message.text}</p>
-                        <p className="text-xs mt-1 text-right opacity-70">{message.time}</p>
+                        <div className={cn('rounded-lg p-3 max-w-xs lg:max-w-md', message.sent ? 'bg-primary text-primary-foreground' : 'bg-muted')}>
+                            <p className="text-sm">{message.text}</p>
+                            <p className="text-xs mt-1 text-right opacity-70">{message.time}</p>
                         </div>
                         {message.sent && (
-                        <Avatar className="w-8 h-8">
-                            <AvatarImage src="https://picsum.photos/seed/me/100/100" />
-                            <AvatarFallback>ME</AvatarFallback>
-                        </Avatar>
+                            <Avatar className="w-8 h-8">
+                                <AvatarImage src="https://picsum.photos/seed/me/100/100" />
+                                <AvatarFallback>ME</AvatarFallback>
+                            </Avatar>
                         )}
                     </div>
                 ))}
+                 {isTyping && (
+                    <div className="flex items-end gap-2">
+                        <Avatar className="w-8 h-8">
+                            <AvatarFallback><Bot className="w-5 h-5" /></AvatarFallback>
+                        </Avatar>
+                        <div className="bg-muted rounded-lg p-3 max-w-xs lg:max-w-md">
+                            <div className="flex items-center gap-1">
+                                <span className="h-2 w-2 bg-foreground/50 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                                <span className="h-2 w-2 bg-foreground/50 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                                <span className="h-2 w-2 bg-foreground/50 rounded-full animate-bounce" />
+                            </div>
+                        </div>
+                    </div>
+                )}
                 </div>
                 
                 <div className="p-2 border-t">
@@ -147,12 +221,12 @@ export default function ChatPage() {
                             onKeyPress={handleKeyPress}
                         />
                         <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center">
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                            <Paperclip className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={handleSendMessage} className="h-8 w-8">
-                            <Send className="h-4 w-4" />
-                        </Button>
+                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <Paperclip className="h-4 w-4" />
+                            </Button>
+                            <Button variant="ghost" size="icon" onClick={handleSendMessage} className="h-8 w-8" disabled={isTyping}>
+                                <Send className="h-4 w-4" />
+                            </Button>
                         </div>
                     </div>
                 </div>
