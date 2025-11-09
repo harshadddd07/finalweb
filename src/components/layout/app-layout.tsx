@@ -18,6 +18,8 @@ import {
   User,
   LogOut,
   Settings,
+  ShieldAlert,
+  Video,
 } from 'lucide-react';
 
 import { AppHeader } from './header';
@@ -36,19 +38,25 @@ export function AppLayout({ children, role }: AppLayoutProps) {
 
   const patientNav = [
     { href: '/dashboard', label: 'Dashboard', icon: Home },
+    { href: '/profile', label: 'Profile', icon: User },
     { href: '/appointments', label: 'Appointments', icon: Calendar },
+    { href: '/emergency', label: 'Emergency', icon: ShieldAlert },
+    { href: '/symptom-analyzer', label: 'Symptom Analyzer', icon: LineChart },
+    { href: '/calendar', label: 'Calendar', icon: Calendar },
+    { href: '/video-call', label: 'Video Call', icon: Video },
     { href: '/chat', label: 'Chat', icon: MessageCircle },
     { href: '/billing', label: 'Billing', icon: CreditCard },
-    { href: '/profile', label: 'Profile', icon: User },
   ];
 
   const doctorNav = [
     { href: '/dashboard', label: 'Dashboard', icon: Home },
-    { href: '/appointments', label: 'Appointments', icon: Calendar },
-    { href: '/symptom-analyzer', label: 'Symptom Analysis', icon: LineChart },
-    { href: '/chat', label: 'Chat', icon: MessageCircle },
-    { href: '/billing', label: 'Billing', icon: CreditCard },
     { href: '/profile', label: 'Profile', icon: User },
+    { href: '/appointments', label: 'Appointments', icon: Calendar },
+    { href: '/emergency', label: 'Emergency', icon: ShieldAlert },
+    { href: '/symptom-analyzer', label: 'Symptom Analyzer', icon: LineChart },
+    { href: '/calendar', label: 'Calendar', icon: Calendar },
+    { href: '/video-call', label: 'Video Call', icon: Video },
+    { href: '/chat', label: 'Chat', icon: MessageCircle },
   ];
 
   const navItems = role === 'doctor' ? doctorNav : patientNav;
