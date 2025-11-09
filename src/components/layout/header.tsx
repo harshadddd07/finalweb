@@ -1,6 +1,7 @@
 'use client';
 
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { ThemeToggle } from '../theme-toggle';
 
 type AppHeaderProps = {
   children: React.ReactNode;
@@ -13,6 +14,7 @@ export function AppHeader({ children }: AppHeaderProps) {
         <SidebarTrigger />
       </div>
       <div className="flex-1" />
+      <ThemeToggle />
       {children}
     </header>
   );
