@@ -8,6 +8,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Download } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const transactions = [
   { id: "INV001", date: "2024-07-22", description: "Consultation with Dr. Sharma", amount: "₹500", status: "Paid" },
@@ -18,6 +19,14 @@ const transactions = [
 
 export default function BillingPage() {
     const qrCodeImage = PlaceHolderImages.find((img) => img.id === 'qr-code');
+    const { toast } = useToast();
+
+    const handleDownload = (invoiceId: string) => {
+        toast({
+            title: "Invoice Downloaded",
+            description: `Your invoice record (${invoiceId}) has been downloaded.`,
+        });
+    }
 
     return (
         <AppLayout role="patient">
@@ -51,7 +60,7 @@ export default function BillingPage() {
                                                 <Badge variant={tx.status === 'Paid' ? 'default' : 'destructive'}>{tx.status}</Badge>
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                <Button variant="ghost" size="icon">
+                                                <Button variant="ghost" size="icon" onClick={() => handleDownload(tx.id)}>
                                                     <Download className="h-4 w-4" />
                                                     <span className="sr-only">Download Invoice</span>
                                                 </Button>
