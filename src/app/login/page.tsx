@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import AuthLayout from "@/components/layout/auth-layout"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 export default function LoginPage() {
   return (
@@ -27,6 +28,19 @@ export default function LoginPage() {
                 </Link>
               </div>
               <Input id="password" type="password" required />
+            </div>
+            <div className="grid gap-2">
+                <Label>Login as</Label>
+                <RadioGroup defaultValue="patient" className="flex gap-4">
+                    <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="patient" id="r-patient" />
+                        <Label htmlFor="r-patient">Patient</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="doctor" id="r-doctor" />
+                        <Label htmlFor="r-doctor">Doctor</Label>
+                    </div>
+                </RadioGroup>
             </div>
             <Button type="submit" className="w-full" asChild>
               <Link href="/dashboard">Login</Link>
