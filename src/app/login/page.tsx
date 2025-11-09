@@ -5,13 +5,22 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import AuthLayout from "@/components/layout/auth-layout"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { ArrowLeft } from "lucide-react"
 
 export default function LoginPage() {
   return (
     <AuthLayout>
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl font-headline">Login</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-2xl font-headline">Login</CardTitle>
+            <Button variant="ghost" size="sm" asChild>
+                <Link href="/">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back
+                </Link>
+            </Button>
+          </div>
           <CardDescription>Enter your email below to login to your account</CardDescription>
         </CardHeader>
         <CardContent>
