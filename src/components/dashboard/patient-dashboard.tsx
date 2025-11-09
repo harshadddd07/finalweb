@@ -1,6 +1,8 @@
+'use client';
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Calendar, MessageCircle, PlusCircle, Video } from "lucide-react";
+import { MessageCircle, PlusCircle, Video } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -79,9 +81,11 @@ export default function PatientDashboard() {
                             <p className="text-sm text-muted-foreground">{appt.specialty}</p>
                             <p className="text-xs text-muted-foreground">{new Date(appt.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} at {appt.time}</p>
                         </div>
-                        <Button variant="outline" size="icon" className="ml-auto">
-                            <Video className="h-4 w-4" />
-                            <span className="sr-only">Start Video Call</span>
+                        <Button asChild variant="outline" size="icon" className="ml-auto">
+                            <Link href="/chat">
+                                <Video className="h-4 w-4" />
+                                <span className="sr-only">Start Video Call</span>
+                            </Link>
                         </Button>
                     </div>
                 ))}
