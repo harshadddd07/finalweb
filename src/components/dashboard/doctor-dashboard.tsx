@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ArrowUpRight, Users, CalendarCheck, BarChart, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ResponsiveContainer, BarChart as BarGraph, XAxis, YAxis, Tooltip, Bar, PieChart, Pie, Cell, Legend } from 'recharts';
+import { ResponsiveContainer, BarChart as BarGraph, XAxis, YAxis, Tooltip, Bar, PieChart, Pie, Cell, Legend, CartesianGrid } from 'recharts';
 import { ChartTooltipContent } from "@/components/ui/chart";
 
 const appointmentRequests = [
