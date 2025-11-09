@@ -1,5 +1,6 @@
 
 'use client';
+import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -8,8 +9,10 @@ import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ResponsiveContainer, BarChart as BarGraph, XAxis, YAxis, Tooltip, Bar, PieChart, Pie, Cell, Legend, CartesianGrid } from 'recharts';
 import { ChartTooltipContent, ChartContainer, ChartConfig, ChartLegendContent } from "@/components/ui/chart";
+import { useToast } from "@/hooks/use-toast";
 
-const appointmentRequests = [
+
+const initialAppointmentRequests = [
     { name: "Aarav Patel", avatar: "https://picsum.photos/seed/pat1/100/100", email: "aarav@example.com", reason: "Annual Check-up" },
     { name: "Saanvi Singh", avatar: "https://picsum.photos/seed/pat2/100/100", email: "saanvi@example.com", reason: "Follow-up" },
     { name: "Advik Kumar", avatar: "https://picsum.photos/seed/pat3/100/100", email: "advik@example.com", reason: "New patient" },
@@ -64,6 +67,27 @@ const appointmentStatusConfig = {
 
 
 export default function DoctorDashboard() {
+  const [appointmentRequests, setAppointmentRequests] = useState(initialAppointmentRequests);
+  const { toast } = useToast();
+
+  const handleApprove = (patientName: string) => {
+    setAppointmentRequests(prev => prev.filter(req => req.name !== patientName));
+    toast({
+        title: "Appointment Approved",
+        description: `${patientName} has been added to your chat list.`,
+    });
+  }
+
+  const handleDecline = (patientName: string) => {
+    setAppointmentRequests(prev => prev.filter(req => req.name !== patientName));
+     toast({
+        variant: "destructive",
+        title: "Appointment Declined",
+        description: `The request from ${patientName} has been declined.`,
+    });
+  }
+
+
   return (
     <div className="flex flex-col gap-4 md:gap-8">
         <h1 className="text-3xl font-bold font-headline">Doctor's Dashboard</h1>
@@ -119,13 +143,19 @@ export default function DoctorDashboard() {
                 <CardHeader className="flex flex-row items-center">
                     <div className="grid gap-2">
                         <CardTitle>New Appointment Requests</CardTitle>
-                        <CardDescription>Patients waiting for confirmation.</CardDescription>
+                        <CardDescription>
+                            {appointmentRequests.length > 0
+                             ? `You have ${appointmentRequests.length} new patient requests.`
+                             : "You have no new appointment requests."
+                            }
+                        </CardDescription>
                     </div>
                     <Button asChild size="sm" className="ml-auto gap-1">
                         <Link href="/appointments?role=doctor">View All <ArrowUpRight className="h-4 w-4" /></Link>
                     </Button>
                 </CardHeader>
                 <CardContent>
+                   {appointmentRequests.length > 0 ? (
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -151,13 +181,16 @@ export default function DoctorDashboard() {
                                     </TableCell>
                                     <TableCell className="hidden sm:table-cell">{req.reason}</TableCell>
                                     <TableCell className="text-right">
-                                        <Button variant="outline" size="sm" className="mr-2">Approve</Button>
-                                        <Button variant="destructive" size="sm">Decline</Button>
+                                        <Button variant="outline" size="sm" className="mr-2" onClick={() => handleApprove(req.name)}>Approve</Button>
+                                        <Button variant="destructive" size="sm" onClick={() => handleDecline(req.name)}>Decline</Button>
                                     </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
+                   ) : (
+                       <div className="text-center text-muted-foreground py-8">No pending requests.</div>
+                   )}
                 </CardContent>
             </Card>
         </div>
@@ -229,3 +262,4 @@ export default function DoctorDashboard() {
   );
 }
 
+  
