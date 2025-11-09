@@ -137,21 +137,21 @@ export default function ChatPage() {
                 ))}
                 </div>
                 
-                <div className="p-4 border-t">
+                <div className="p-2 border-t">
                     <div className="relative">
                         <Input
                             placeholder="Type a message..."
-                            className="pr-24"
+                            className="pr-20"
                             value={newMessage}
                             onChange={(e) => setNewMessage(e.target.value)}
                             onKeyPress={handleKeyPress}
                         />
-                        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
-                        <Button variant="ghost" size="icon">
-                            <Paperclip className="h-5 w-5" />
+                        <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center">
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <Paperclip className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={handleSendMessage}>
-                            <Send className="h-5 w-5" />
+                        <Button variant="ghost" size="icon" onClick={handleSendMessage} className="h-8 w-8">
+                            <Send className="h-4 w-4" />
                         </Button>
                         </div>
                     </div>
