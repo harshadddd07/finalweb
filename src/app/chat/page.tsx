@@ -26,10 +26,12 @@ const initialMessages: Record<number, { id: number; sender: string; text: string
     { id: 3, sender: 'Dr. Priya Sharma', text: 'That is great to hear. Remember to take your medication as prescribed.', time: '10:32 AM', sent: false },
   ],
   2: [
-      { id: 1, sender: 'AI Assistant', text: 'Hello! I am your AI Medical Assistant. Dr. Rahul Gupta is currently offline, but I am here to help with any general questions you may have.', time: '11:00 AM', sent: false },
+      { id: 1, sender: 'AI Assistant', text: 'Hello! I am your AI Medical Assistant. Dr. Rahul Gupta is currently offline, but I am here to help with any general questions you may have. Please remember, I am an AI assistant and not a substitute for professional medical advice. Consult with a qualified healthcare provider for any medical concerns.', time: '11:00 AM', sent: false },
   ],
   3: [],
-  4: [],
+  4: [
+      { id: 1, sender: 'AI Assistant', text: 'Hello! I am your AI Medical Assistant. Dr. Vikram Singh is currently offline, but I am here to help with any general questions you may have. Please remember, I am an AI assistant and not a substitute for professional medical advice. Consult with a qualified healthcare provider for any medical concerns.', time: '11:05 AM', sent: false },
+  ],
 };
 
 
