@@ -82,7 +82,7 @@ export default function PatientDashboard() {
                             <p className="text-xs text-muted-foreground">{new Date(appt.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} at {appt.time}</p>
                         </div>
                         <Button asChild variant="outline" size="icon" className="ml-auto">
-                            <Link href="/chat">
+                            <Link href="/video-call" target="_blank">
                                 <Video className="h-4 w-4" />
                                 <span className="sr-only">Start Video Call</span>
                             </Link>
