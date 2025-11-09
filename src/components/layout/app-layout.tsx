@@ -80,7 +80,7 @@ export function AppLayout({ children, role }: AppLayoutProps) {
                   Settings
                 </span>
               </Button>
-              <Button variant="ghost" className="w-full justify-start gap-2 text-destructive hover:text-destructive">
+              <Button variant="ghost" className="w-full justify-start gap-2 text-destructive hover:text-destructive" asChild>
                 <Link href="/" className="flex items-center gap-2 w-full">
                   <LogOut className="w-4 h-4" />
                   <span className="group-data-[collapsible=icon]:hidden">
