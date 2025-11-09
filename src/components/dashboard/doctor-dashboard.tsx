@@ -6,7 +6,7 @@ import { ArrowUpRight, Users, CalendarCheck, BarChart, MessageCircle } from "luc
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ResponsiveContainer, BarChart as BarGraph, XAxis, YAxis, Tooltip, Bar, PieChart, Pie, Cell, Legend, CartesianGrid } from 'recharts';
-import { ChartTooltipContent } from "@/components/ui/chart";
+import { ChartTooltipContent, ChartContainer, ChartConfig } from "@/components/ui/chart";
 
 const appointmentRequests = [
     { name: "Aarav Patel", avatar: "https://picsum.photos/seed/pat1/100/100", email: "aarav@example.com", reason: "Annual Check-up" },
@@ -24,13 +24,29 @@ const weeklyAppointmentsData = [
   { day: 'Sun', appointments: 2 },
 ];
 
+const barChartConfig = {
+  appointments: {
+    label: "Appointments",
+    color: "hsl(var(--primary))",
+  },
+} satisfies ChartConfig;
+
 const patientDemographicsData = [
-  { name: '0-18', value: 250 },
-  { name: '19-40', value: 600 },
-  { name: '41-60', value: 300 },
-  { name: '60+', value: 104 },
+  { name: '0-18', value: 250, fill: "hsl(var(--chart-1))" },
+  { name: '19-40', value: 600, fill: "hsl(var(--chart-2))" },
+  { name: '41-60', value: 300, fill: "hsl(var(--chart-3))" },
+  { name: '60+', value: 104, fill: "hsl(var(--chart-4))" },
 ];
-const COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))'];
+const pieChartConfig = {
+  value: {
+    label: "Patients",
+  },
+  "0-18": { label: "0-18", color: "hsl(var(--chart-1))" },
+  "19-40": { label: "19-40", color: "hsl(var(--chart-2))" },
+  "41-60": { label: "41-60", color: "hsl(var(--chart-3))" },
+  "60+": { label: "60+", color: "hsl(var(--chart-4))" },
+} satisfies ChartConfig;
+
 
 export default function DoctorDashboard() {
   return (
@@ -89,7 +105,7 @@ export default function DoctorDashboard() {
                     <CardTitle>Appointments This Week</CardTitle>
                 </CardHeader>
                 <CardContent className="h-[300px]">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ChartContainer config={barChartConfig}>
                         <BarGraph data={weeklyAppointmentsData}>
                              <CartesianGrid strokeDasharray="3 3" vertical={false} />
                             <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
@@ -100,7 +116,7 @@ export default function DoctorDashboard() {
                             />
                             <Bar dataKey="appointments" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                         </BarGraph>
-                    </ResponsiveContainer>
+                    </ChartContainer>
                 </CardContent>
             </Card>
              <Card>
@@ -109,25 +125,21 @@ export default function DoctorDashboard() {
                     <CardDescription>Age distribution of all patients.</CardDescription>
                 </CardHeader>
                 <CardContent className="h-[300px] flex items-center justify-center">
-                   <ResponsiveContainer width="100%" height="100%">
+                   <ChartContainer config={pieChartConfig}>
                         <PieChart>
+                            <Tooltip content={<ChartTooltipContent nameKey="name" />} />
                             <Pie
                                 data={patientDemographicsData}
+                                dataKey="value"
+                                nameKey="name"
                                 cx="50%"
                                 cy="50%"
-                                labelLine={false}
                                 outerRadius={80}
-                                fill="#8884d8"
-                                dataKey="value"
-                            >
-                                {patientDemographicsData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                ))}
-                            </Pie>
-                            <Tooltip content={<ChartTooltipContent nameKey="name" />} />
+                                labelLine={false}
+                            />
                             <Legend />
                         </PieChart>
-                    </ResponsiveContainer>
+                    </ChartContainer>
                 </CardContent>
             </Card>
         </div>
