@@ -1,3 +1,4 @@
+'use client';
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -6,8 +7,11 @@ import { Label } from "@/components/ui/label"
 import AuthLayout from "@/components/layout/auth-layout"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ArrowLeft } from "lucide-react"
+import { useState } from "react"
 
 export default function LoginPage() {
+  const [role, setRole] = useState('patient');
+
   return (
     <AuthLayout>
       <Card>
@@ -40,7 +44,7 @@ export default function LoginPage() {
             </div>
             <div className="grid gap-2">
                 <Label>Login as</Label>
-                <RadioGroup defaultValue="patient" className="flex gap-4">
+                <RadioGroup defaultValue="patient" className="flex gap-4" onValueChange={setRole}>
                     <div className="flex items-center space-x-2">
                         <RadioGroupItem value="patient" id="r-patient" />
                         <Label htmlFor="r-patient">Patient</Label>
@@ -52,7 +56,7 @@ export default function LoginPage() {
                 </RadioGroup>
             </div>
             <Button type="submit" className="w-full" asChild>
-              <Link href="/dashboard">Login</Link>
+              <Link href={`/dashboard?role=${role}`}>Login</Link>
             </Button>
           </div>
           <div className="mt-4 text-center text-sm">

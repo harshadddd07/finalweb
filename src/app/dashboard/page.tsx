@@ -1,10 +1,47 @@
+'use client';
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import { AppLayout } from "@/components/layout/app-layout";
-import DashboardClient from "@/components/dashboard/dashboard-client";
+import PatientDashboard from "@/components/dashboard/patient-dashboard";
+import DoctorDashboard from "@/components/dashboard/doctor-dashboard";
+import { Skeleton } from '@/components/ui/skeleton';
+
+function DashboardContent() {
+  const searchParams = useSearchParams();
+  const role = searchParams.get('role') === 'doctor' ? 'doctor' : 'patient';
+  
+  return (
+    <AppLayout role={role}>
+      {role === 'doctor' ? <DoctorDashboard /> : <PatientDashboard />}
+    </AppLayout>
+  );
+}
+
+function DashboardLoading() {
+  return (
+    <div className="p-8">
+      <Skeleton className="h-10 w-1/4 mb-8" />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+        <Skeleton className="h-24" />
+        <Skeleton className="h-24" />
+        <Skeleton className="h-24" />
+        <Skeleton className="h-24" />
+      </div>
+      <div className="grid gap-8 lg:grid-cols-3">
+        <Skeleton className="lg:col-span-2 h-96" />
+        <div className="space-y-8">
+          <Skeleton className="h-64" />
+          <Skeleton className="h-48" />
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function DashboardPage() {
   return (
-    // The role will be dynamically determined in a real app
-    // Here we pass it down to the client to allow toggling for demo purposes
-    <DashboardClient />
+    <Suspense fallback={<DashboardLoading />}>
+      <DashboardContent />
+    </Suspense>
   );
 }
