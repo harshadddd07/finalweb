@@ -1,3 +1,4 @@
+
 'use client';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -12,6 +13,8 @@ const appointmentRequests = [
     { name: "Aarav Patel", avatar: "https://picsum.photos/seed/pat1/100/100", email: "aarav@example.com", reason: "Annual Check-up" },
     { name: "Saanvi Singh", avatar: "https://picsum.photos/seed/pat2/100/100", email: "saanvi@example.com", reason: "Follow-up" },
     { name: "Advik Kumar", avatar: "https://picsum.photos/seed/pat3/100/100", email: "advik@example.com", reason: "New patient" },
+    { name: "Diya Sharma", avatar: "https://picsum.photos/seed/pat4/100/100", email: "diya@example.com", reason: "Symptom check" },
+    { name: "Vihaan Joshi", avatar: "https://picsum.photos/seed/pat5/100/100", email: "vihaan@example.com", reason: "Prescription refill" },
 ];
 
 const weeklyAppointmentsData = [
@@ -111,6 +114,54 @@ export default function DoctorDashboard() {
             </Card>
         </div>
 
+        <div className="grid gap-4 md:gap-8 lg:grid-cols-2">
+            <Card className="lg:col-span-2">
+                <CardHeader className="flex flex-row items-center">
+                    <div className="grid gap-2">
+                        <CardTitle>New Appointment Requests</CardTitle>
+                        <CardDescription>Patients waiting for confirmation.</CardDescription>
+                    </div>
+                    <Button asChild size="sm" className="ml-auto gap-1">
+                        <Link href="/appointments">View All <ArrowUpRight className="h-4 w-4" /></Link>
+                    </Button>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Patient</TableHead>
+                                <TableHead className="hidden sm:table-cell">Reason for Visit</TableHead>
+                                <TableHead className="text-right">Actions</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {appointmentRequests.map((req) => (
+                                <TableRow key={req.email}>
+                                    <TableCell>
+                                        <div className="flex items-center gap-3">
+                                            <Avatar className="h-9 w-9">
+                                                <AvatarImage src={req.avatar} alt={req.name} />
+                                                <AvatarFallback>{req.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                                            </Avatar>
+                                            <div>
+                                                <div className="font-medium">{req.name}</div>
+                                                <div className="hidden text-sm text-muted-foreground md:inline">{req.email}</div>
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="hidden sm:table-cell">{req.reason}</TableCell>
+                                    <TableCell className="text-right">
+                                        <Button variant="outline" size="sm" className="mr-2">Approve</Button>
+                                        <Button variant="destructive" size="sm">Decline</Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+        </div>
+
         <div className="grid gap-4 md:gap-8 lg:grid-cols-3">
             <Card className="lg:col-span-2">
                 <CardHeader>
@@ -131,96 +182,50 @@ export default function DoctorDashboard() {
                     </ChartContainer>
                 </CardContent>
             </Card>
-            <Card>
-                <CardHeader>
-                    <CardTitle>Appointment Status</CardTitle>
-                </CardHeader>
-                <CardContent className="h-[300px] flex items-center justify-center">
-                   <ChartContainer config={appointmentStatusConfig}>
-                        <PieChart>
-                            <Tooltip content={<ChartTooltipContent nameKey="name" />} />
-                             <Pie data={appointmentStatusData} dataKey="value" nameKey="name" innerRadius={50} strokeWidth={5}>
-                                {appointmentStatusData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.fill} stroke={entry.fill} />
-                                ))}
-                            </Pie>
-                            <Legend />
-                        </PieChart>
-                    </ChartContainer>
-                </CardContent>
-            </Card>
-        </div>
-
-        <div className="grid gap-4 md:gap-8 lg:grid-cols-2">
-             <Card>
-                <CardHeader>
-                    <CardTitle>Patient Demographics</CardTitle>
-                    <CardDescription>Age distribution of all patients.</CardDescription>
-                </CardHeader>
-                <CardContent className="h-[300px] flex items-center justify-center">
-                   <ChartContainer config={pieChartConfig}>
-                        <PieChart>
-                            <Tooltip content={<ChartTooltipContent nameKey="name" />} />
-                            <Pie
-                                data={patientDemographicsData}
-                                dataKey="value"
-                                nameKey="name"
-                                cx="50%"
-                                cy="50%"
-                                outerRadius={80}
-                                labelLine={false}
-                            />
-                            <Legend />
-                        </PieChart>
-                    </ChartContainer>
-                </CardContent>
-            </Card>
-            <Card>
-                <CardHeader className="flex flex-row items-center">
-                    <div className="grid gap-2">
-                        <CardTitle>New Appointment Requests</CardTitle>
-                        <CardDescription>Patients waiting for confirmation.</CardDescription>
-                    </div>
-                    <Button asChild size="sm" className="ml-auto gap-1">
-                        <Link href="/appointments">View All <ArrowUpRight className="h-4 w-4" /></Link>
-                    </Button>
-                </CardHeader>
-                <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Patient</TableHead>
-                                <TableHead>Reason for Visit</TableHead>
-                                <TableHead className="text-right">Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {appointmentRequests.map((req) => (
-                                <TableRow key={req.email}>
-                                    <TableCell>
-                                        <div className="flex items-center gap-3">
-                                            <Avatar className="h-9 w-9">
-                                                <AvatarImage src={req.avatar} alt={req.name} />
-                                                <AvatarFallback>{req.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                                            </Avatar>
-                                            <div>
-                                                <div className="font-medium">{req.name}</div>
-                                                <div className="text-sm text-muted-foreground">{req.email}</div>
-                                            </div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>{req.reason}</TableCell>
-                                    <TableCell className="text-right">
-                                        <Button variant="outline" size="sm" className="mr-2">Approve</Button>
-                                        <Button variant="destructive" size="sm">Decline</Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
+            <div className="flex flex-col gap-4">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Appointment Status</CardTitle>
+                    </CardHeader>
+                    <CardContent className="h-[150px] flex items-center justify-center">
+                       <ChartContainer config={appointmentStatusConfig}>
+                            <PieChart>
+                                <Tooltip content={<ChartTooltipContent nameKey="name" />} />
+                                 <Pie data={appointmentStatusData} dataKey="value" nameKey="name" innerRadius={30} strokeWidth={5}>
+                                    {appointmentStatusData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={entry.fill} stroke={entry.fill} />
+                                    ))}
+                                </Pie>
+                                <Legend content={<ChartLegendContent nameKey="name" />}  />
+                            </PieChart>
+                        </ChartContainer>
+                    </CardContent>
+                </Card>
+                 <Card>
+                    <CardHeader>
+                        <CardTitle>Patient Demographics</CardTitle>
+                    </CardHeader>
+                    <CardContent className="h-[150px] flex items-center justify-center">
+                       <ChartContainer config={pieChartConfig}>
+                            <PieChart>
+                                <Tooltip content={<ChartTooltipContent nameKey="name" />} />
+                                <Pie
+                                    data={patientDemographicsData}
+                                    dataKey="value"
+                                    nameKey="name"
+                                    cx="50%"
+                                    cy="50%"
+                                    outerRadius={40}
+                                    labelLine={false}
+                                />
+                                <Legend content={<ChartLegendContent nameKey="name" />} />
+                            </PieChart>
+                        </ChartContainer>
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     </div>
   );
 }
+
