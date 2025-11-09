@@ -12,14 +12,21 @@ import { Sidebar, SidebarContent, SidebarHeader, SidebarTrigger } from '@/compon
 import { getChatResponse } from '@/ai/flows/chat-flow';
 import { useToast } from '@/hooks/use-toast';
 
+const aiAssistant = { id: 0, name: 'AI Medical Assistant', specialty: 'General Information', avatar: '', online: true, isAi: true };
+
 const doctors = [
-    { id: 1, name: "Dr. Priya Sharma", specialty: "Cardiologist", avatar: "https://picsum.photos/seed/doc1/100/100", online: true },
-    { id: 2, name: "Dr. Rahul Gupta", specialty: "Dermatologist", avatar: "https://picsum.photos/seed/doc2/100/100", online: false },
-    { id: 3, name: "Dr. Anjali Desai", specialty: "Pediatrician", avatar: "https://picsum.photos/seed/doc3/100/100", online: true },
-    { id: 4, name: "Dr. Vikram Singh", specialty: "Neurologist", avatar: "https://picsum.photos/seed/doc4/100/100", online: false },
+    { id: 1, name: "Dr. Priya Sharma", specialty: "Cardiologist", avatar: "https://picsum.photos/seed/doc1/100/100", online: true, isAi: false },
+    { id: 2, name: "Dr. Rahul Gupta", specialty: "Dermatologist", avatar: "https://picsum.photos/seed/doc2/100/100", online: false, isAi: false },
+    { id: 3, name: "Dr. Anjali Desai", specialty: "Pediatrician", avatar: "https://picsum.photos/seed/doc3/100/100", online: true, isAi: false },
+    { id: 4, name: "Dr. Vikram Singh", specialty: "Neurologist", avatar: "https://picsum.photos/seed/doc4/100/100", online: false, isAi: false },
 ];
 
+const allContacts = [aiAssistant, ...doctors];
+
 const initialMessages: Record<number, { id: number; sender: string; text: string; time: string; sent: boolean }[]> = {
+  0: [
+    { id: 1, sender: 'AI Assistant', text: 'Hello! I am your AI Medical Assistant. I am here to help with any general questions you may have. Please remember, I am an AI assistant and not a substitute for professional medical advice. Consult with a qualified healthcare provider for any medical concerns.', time: '11:10 AM', sent: false },
+  ],
   1: [
     { id: 1, sender: 'Dr. Priya Sharma', text: 'Hello, how are you feeling today?', time: '10:30 AM', sent: false },
     { id: 2, sender: 'Me', text: 'I am feeling a bit better, thank you for asking!', time: '10:31 AM', sent: true },
@@ -35,29 +42,35 @@ const initialMessages: Record<number, { id: number; sender: string; text: string
 };
 
 
-function DoctorList({selectedDoctor, onSelectDoctor}: {selectedDoctor: any, onSelectDoctor: (doctor: any) => void}) {
+function DoctorList({selectedContact, onSelectContact}: {selectedContact: any, onSelectContact: (contact: any) => void}) {
     return(
         <>
             <CardHeader>
-                <Input placeholder="Search doctors..." />
+                <Input placeholder="Search..." />
             </CardHeader>
             <CardContent className="flex-1 overflow-auto p-2">
                 <div className="flex flex-col gap-1">
-                {doctors.map((doctor) => (
+                {allContacts.map((contact) => (
                     <Button 
-                        key={doctor.id} 
-                        variant={selectedDoctor.id === doctor.id ? 'secondary' : 'ghost'} 
+                        key={contact.id} 
+                        variant={selectedContact.id === contact.id ? 'secondary' : 'ghost'} 
                         className="w-full justify-start h-16 gap-2 p-2"
-                        onClick={() => onSelectDoctor(doctor)}
+                        onClick={() => onSelectContact(contact)}
                     >
                         <Avatar className="w-10 h-10 border-2 border-background">
-                            <AvatarImage src={doctor.avatar} />
-                            <AvatarFallback>{doctor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                            {doctor.online && <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />}
+                            {contact.isAi ? (
+                                <AvatarFallback><Bot className="w-5 h-5" /></AvatarFallback>
+                            ) : (
+                                <>
+                                    <AvatarImage src={contact.avatar} />
+                                    <AvatarFallback>{contact.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                                </>
+                            )}
+                            {contact.online && <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />}
                         </Avatar>
                         <div className="text-left">
-                            <div className="font-semibold">{doctor.name}</div>
-                            <div className="text-xs text-muted-foreground">{doctor.specialty}</div>
+                            <div className="font-semibold">{contact.name}</div>
+                            <div className="text-xs text-muted-foreground">{contact.specialty}</div>
                         </div>
                     </Button>
                 ))}
@@ -70,12 +83,12 @@ function DoctorList({selectedDoctor, onSelectDoctor}: {selectedDoctor: any, onSe
 export default function ChatPage() {
     const [messages, setMessages] = useState(initialMessages);
     const [newMessage, setNewMessage] = useState('');
-    const [selectedDoctor, setSelectedDoctor] = useState(doctors[0]);
+    const [selectedContact, setSelectedContact] = useState(allContacts[0]);
     const [isTyping, setIsTyping] = useState(false);
     const chatContainerRef = useRef<HTMLDivElement>(null);
     const { toast } = useToast();
 
-    const currentMessages = messages[selectedDoctor.id] || [];
+    const currentMessages = messages[selectedContact.id] || [];
 
     useEffect(() => {
         if (chatContainerRef.current) {
@@ -96,10 +109,10 @@ export default function ChatPage() {
         };
         
         const updatedMessages = [...currentMessages, userMessage];
-        setMessages(prev => ({ ...prev, [selectedDoctor.id]: updatedMessages }));
+        setMessages(prev => ({ ...prev, [selectedContact.id]: updatedMessages }));
         setNewMessage('');
 
-        if (!selectedDoctor.online) {
+        if (selectedContact.isAi || !selectedContact.online) {
             setIsTyping(true);
             try {
                 const aiResponse = await getChatResponse({
@@ -115,7 +128,7 @@ export default function ChatPage() {
                     sent: false,
                 };
 
-                setMessages(prev => ({ ...prev, [selectedDoctor.id]: [...updatedMessages, aiMessage] }));
+                setMessages(prev => ({ ...prev, [selectedContact.id]: [...updatedMessages, aiMessage] }));
 
             } catch (error) {
                  toast({
@@ -140,7 +153,7 @@ export default function ChatPage() {
     <AppLayout role="patient">
         <Card className="h-[calc(100vh-10rem)] w-full grid md:grid-cols-3 lg:grid-cols-4">
           <div className="hidden flex-col border-r bg-primary-foreground/50 dark:bg-card/50 md:flex">
-             <DoctorList selectedDoctor={selectedDoctor} onSelectDoctor={setSelectedDoctor} />
+             <DoctorList selectedContact={selectedContact} onSelectContact={setSelectedContact} />
           </div>
           <div className="md:col-span-2 lg:col-span-3 flex flex-col">
             <div className="flex items-center p-2 border-b">
@@ -149,27 +162,37 @@ export default function ChatPage() {
                 </div>
                 <div className="flex items-center gap-2">
                     <Avatar>
-                        <AvatarImage src={selectedDoctor.avatar} />
-                        <AvatarFallback>{selectedDoctor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        {selectedContact.isAi ? (
+                             <AvatarFallback><Bot className="w-5 h-5" /></AvatarFallback>
+                        ) : (
+                            <>
+                                <AvatarImage src={selectedContact.avatar} />
+                                <AvatarFallback>{selectedContact.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                            </>
+                        )}
                     </Avatar>
                     <div>
-                        <p className="text-sm font-medium">{selectedDoctor.name}</p>
+                        <p className="text-sm font-medium">{selectedContact.name}</p>
                          <div className="flex items-center gap-1.5">
-                            <div className={cn("w-2 h-2 rounded-full", selectedDoctor.online ? "bg-green-500" : "bg-gray-400")} />
-                            <p className={`text-xs ${selectedDoctor.online ? 'text-green-600' : 'text-muted-foreground'}`}>{selectedDoctor.online ? 'Online' : 'Offline'}</p>
-                            {!selectedDoctor.online && <Bot className="w-3 h-3 text-muted-foreground" />}
+                            <div className={cn("w-2 h-2 rounded-full", selectedContact.online ? "bg-green-500" : "bg-gray-400")} />
+                            <p className={`text-xs ${selectedContact.online ? 'text-green-600' : 'text-muted-foreground'}`}>{selectedContact.online ? 'Online' : 'Offline'}</p>
+                            {(!selectedContact.online || selectedContact.isAi) && <Bot className="w-3 h-3 text-muted-foreground" />}
                         </div>
                     </div>
                 </div>
                 <div className="ml-auto flex items-center gap-2">
-                    <Button variant="ghost" size="icon" asChild>
-                        <Link href="/video-call" target="_blank">
-                          <Video className="h-5 w-5" />
-                        </Link>
-                    </Button>
-                    <Button variant="ghost" size="icon">
-                        <Phone className="h-5 w-5" />
-                    </Button>
+                    {!selectedContact.isAi && (
+                        <>
+                        <Button variant="ghost" size="icon" asChild>
+                            <Link href="/video-call" target="_blank">
+                            <Video className="h-5 w-5" />
+                            </Link>
+                        </Button>
+                        <Button variant="ghost" size="icon">
+                            <Phone className="h-5 w-5" />
+                        </Button>
+                        </>
+                    )}
                 </div>
             </div>
 
@@ -179,10 +202,14 @@ export default function ChatPage() {
                     <div key={message.id} className={cn('flex items-end gap-2', message.sent ? 'justify-end' : '')}>
                         {!message.sent && (
                            <Avatar className="w-8 h-8">
-                                <AvatarImage src={message.sender === 'AI Assistant' ? undefined : selectedDoctor.avatar} />
-                                <AvatarFallback>
-                                    {message.sender === 'AI Assistant' ? <Bot className="w-5 h-5" /> : selectedDoctor.name.split(' ').map(n => n[0]).join('')}
-                                </AvatarFallback>
+                                {message.sender === 'AI Assistant' || selectedContact.isAi ? (
+                                    <AvatarFallback><Bot className="w-5 h-5" /></AvatarFallback>
+                                ) : (
+                                    <>
+                                        <AvatarImage src={selectedContact.avatar} />
+                                        <AvatarFallback>{selectedContact.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                                    </>
+                                )}
                             </Avatar>
                         )}
                         <div className={cn('rounded-lg p-3 max-w-xs lg:max-w-md', message.sent ? 'bg-primary text-primary-foreground' : 'bg-muted')}>
@@ -237,7 +264,7 @@ export default function ChatPage() {
         </Card>
         <Sidebar variant="sidebar" side="left" className="md:hidden">
             <SidebarContent className="flex flex-col bg-card p-0">
-                <DoctorList selectedDoctor={selectedDoctor} onSelectDoctor={setSelectedDoctor} />
+                <DoctorList selectedContact={selectedContact} onSelectContact={setSelectedContact} />
             </SidebarContent>
         </Sidebar>
     </AppLayout>
