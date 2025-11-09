@@ -27,14 +27,14 @@
     {
       "id": "avatar-3",
       "description": "User avatar 3",
-      "imageUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjI1OTQ3NDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjI1OTQ3NDd8MA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "person portrait"
     },
     {
       "id": "video-call-main",
       "description": "Main video feed in a video call",
-      "imageUrl": "https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwZXJzb24lMjBzbWlsaW5nfGVufDB8fHx8MTc2MjY0MzE3N3ww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "person smiling"
+      "imageUrl": "https://images.unsplash.com/photo-1542384557-0814d6073934?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxkb2N0b3IlMjBzbWlsaW5nfGVufDB8fHx8MTc2MjY0NDM1OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "doctor smiling"
     },
     {
       "id": "video-call-self",
