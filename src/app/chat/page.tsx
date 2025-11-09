@@ -7,12 +7,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Paperclip, Phone, Send, Video } from 'lucide-react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
-const contacts = [
-  { id: 1, name: 'Dr. Priya Sharma', specialty: 'Cardiologist', avatarId: 'avatar-2', online: true },
-  { id: 2, name: 'Aarav Patel', specialty: 'Patient', avatarId: 'avatar-1', online: false },
-  { id: 3, name: 'Dr. Rahul Gupta', specialty: 'Dermatologist', avatarId: 'avatar-3', online: true },
+const doctors = [
+    { id: 1, name: "Dr. Priya Sharma", specialty: "Cardiologist", avatar: "https://picsum.photos/seed/doc1/100/100", online: true },
+    { id: 2, name: "Dr. Rahul Gupta", specialty: "Dermatologist", avatar: "https://picsum.photos/seed/doc2/100/100", online: false },
+    { id: 3, name: "Dr. Anjali Desai", specialty: "Pediatrician", avatar: "https://picsum.photos/seed/doc3/100/100", online: true },
+    { id: 4, name: "Dr. Vikram Singh", specialty: "Neurologist", avatar: "https://picsum.photos/seed/doc4/100/100", online: true },
 ];
 
 const initialMessages = [
@@ -24,6 +24,7 @@ const initialMessages = [
 export default function ChatPage() {
     const [messages, setMessages] = useState(initialMessages);
     const [newMessage, setNewMessage] = useState('');
+    const [selectedDoctor, setSelectedDoctor] = useState(doctors[0]);
 
     const handleSendMessage = () => {
         if (newMessage.trim() === '') return;
@@ -50,26 +51,28 @@ export default function ChatPage() {
         <Card className="h-[calc(100vh-10rem)] w-full grid md:grid-cols-3 lg:grid-cols-4">
           <div className="flex-col border-r bg-primary-foreground/50 dark:bg-card/50 md:flex">
             <CardHeader>
-                <Input placeholder="Search contacts..." />
+                <Input placeholder="Search doctors..." />
             </CardHeader>
             <CardContent className="flex-1 overflow-auto p-2">
                 <div className="flex flex-col gap-1">
-                {contacts.map((contact) => {
-                    const avatar = PlaceHolderImages.find(img => img.id === contact.avatarId);
-                    return (
-                    <Button key={contact.id} variant="ghost" className="w-full justify-start h-16 gap-2 p-2">
+                {doctors.map((doctor) => (
+                    <Button 
+                        key={doctor.id} 
+                        variant={selectedDoctor.id === doctor.id ? 'secondary' : 'ghost'} 
+                        className="w-full justify-start h-16 gap-2 p-2"
+                        onClick={() => setSelectedDoctor(doctor)}
+                    >
                         <Avatar className="w-10 h-10 border-2 border-background">
-                        {avatar && <AvatarImage src={avatar.imageUrl} />}
-                        <AvatarFallback>{contact.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                        {contact.online && <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />}
+                            <AvatarImage src={doctor.avatar} />
+                            <AvatarFallback>{doctor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                            {doctor.online && <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />}
                         </Avatar>
                         <div className="text-left">
-                        <div className="font-semibold">{contact.name}</div>
-                        <div className="text-xs text-muted-foreground">{contact.specialty}</div>
+                            <div className="font-semibold">{doctor.name}</div>
+                            <div className="text-xs text-muted-foreground">{doctor.specialty}</div>
                         </div>
                     </Button>
-                    );
-                })}
+                ))}
                 </div>
             </CardContent>
           </div>
@@ -77,12 +80,12 @@ export default function ChatPage() {
             <div className="flex items-center p-2 border-b">
                 <div className="flex items-center gap-2">
                     <Avatar>
-                        <AvatarImage src={PlaceHolderImages.find(img => img.id === 'avatar-2')?.imageUrl} />
-                        <AvatarFallback>PS</AvatarFallback>
+                        <AvatarImage src={selectedDoctor.avatar} />
+                        <AvatarFallback>{selectedDoctor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                     </Avatar>
                     <div>
-                        <p className="text-sm font-medium">Dr. Priya Sharma</p>
-                        <p className="text-xs text-green-500">Online</p>
+                        <p className="text-sm font-medium">{selectedDoctor.name}</p>
+                        <p className={`text-xs ${selectedDoctor.online ? 'text-green-500' : 'text-muted-foreground'}`}>{selectedDoctor.online ? 'Online' : 'Offline'}</p>
                     </div>
                 </div>
                 <div className="ml-auto flex items-center gap-2">
@@ -103,8 +106,8 @@ export default function ChatPage() {
                     <div key={message.id} className={`flex items-end gap-2 ${message.sent ? 'justify-end' : ''}`}>
                         {!message.sent && (
                         <Avatar className="w-8 h-8">
-                            <AvatarImage src={PlaceHolderImages.find(img => img.id === 'avatar-2')?.imageUrl} />
-                            <AvatarFallback>PS</AvatarFallback>
+                            <AvatarImage src={selectedDoctor.avatar} />
+                            <AvatarFallback>{selectedDoctor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                         </Avatar>
                         )}
                         <div className={`rounded-lg p-3 max-w-xs lg:max-w-md ${message.sent ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
@@ -113,7 +116,7 @@ export default function ChatPage() {
                         </div>
                         {message.sent && (
                         <Avatar className="w-8 h-8">
-                            <AvatarImage src={PlaceHolderImages.find(img => img.id === 'avatar-1')?.imageUrl} />
+                            <AvatarImage src="https://picsum.photos/seed/me/100/100" />
                             <AvatarFallback>ME</AvatarFallback>
                         </Avatar>
                         )}
