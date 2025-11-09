@@ -9,17 +9,20 @@ import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function ProfilePage() {
+function ProfileContent() {
+    const searchParams = useSearchParams();
+    const role = searchParams.get('role') || 'patient';
     const avatar = PlaceHolderImages.find((img) => img.id === 'avatar-1');
-    const role = 'patient'; // This would be dynamic in a real app
 
     return (
         <div className="min-h-screen bg-background p-4 sm:p-6 md:p-8">
             <div className="max-w-6xl mx-auto">
                 <div className="flex items-center gap-4 mb-8">
                     <Button variant="outline" size="icon" asChild>
-                        <Link href="/dashboard">
+                        <Link href={`/dashboard?role=${role}`}>
                             <ArrowLeft className="h-4 w-4" />
                             <span className="sr-only">Back to Dashboard</span>
                         </Link>
@@ -39,7 +42,7 @@ export default function ProfilePage() {
                             <CardContent className="flex flex-col items-center gap-4 text-center">
                                 <Avatar className="h-32 w-32">
                                     {avatar && <AvatarImage src={avatar.imageUrl} alt="User Avatar" />}
-                                    <AvatarFallback className="text-4xl">AP</AvatarFallback>
+                                    <AvatarFallback className="text-4xl">{role === 'doctor' ? 'PS' : 'AP'}</AvatarFallback>
                                 </Avatar>
                                 <div className="space-y-2">
                                     <Button>Change Photo</Button>
@@ -58,11 +61,11 @@ export default function ProfilePage() {
                                 <div className="grid sm:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <Label htmlFor="fullName">Full Name</Label>
-                                        <Input id="fullName" defaultValue="Aarav Patel" />
+                                        <Input id="fullName" defaultValue={role === 'doctor' ? "Dr. Priya Sharma" : "Aarav Patel"} />
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="email">Email Address</Label>
-                                        <Input id="email" type="email" defaultValue="aarav@example.com" disabled />
+                                        <Input id="email" type="email" defaultValue={role === 'doctor' ? "priya.s@example.com" : "aarav@example.com"} disabled />
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="phone">Phone Number</Label>
@@ -110,4 +113,12 @@ export default function ProfilePage() {
             </div>
         </div>
     );
+}
+
+export default function ProfilePage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ProfileContent />
+        </Suspense>
+    )
 }

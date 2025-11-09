@@ -4,6 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ShieldAlert, PhoneCall, Hospital, PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
 const nearbyHospitals = [
     { name: "City General Hospital", address: "123 Main Street, Mumbai", phone: "022-21234567" },
@@ -11,9 +13,13 @@ const nearbyHospitals = [
     { name: "Fortis Hospital", address: "789 Lake View Road, Bengaluru", phone: "080-25550000" },
 ]
 
-export default function EmergencyPage() {
+
+function EmergencyContent() {
+    const searchParams = useSearchParams();
+    const role = searchParams.get('role') || 'patient';
+
     return (
-        <AppLayout role="patient">
+        <AppLayout role={role as 'patient' | 'doctor'}>
             <div className="space-y-8">
                 <div className="flex items-center gap-4">
                     <ShieldAlert className="h-8 w-8 text-destructive" />
@@ -103,4 +109,13 @@ export default function EmergencyPage() {
             </div>
         </AppLayout>
     );
+}
+
+
+export default function EmergencyPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <EmergencyContent />
+        </Suspense>
+    )
 }

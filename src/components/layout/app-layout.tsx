@@ -8,7 +8,7 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
   Bell,
   LineChart,
@@ -37,9 +37,11 @@ type AppLayoutProps = {
 
 export function AppLayout({ children, role }: AppLayoutProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const roleFromUrl = searchParams.get('role');
 
   const patientNav = [
-    { href: '/dashboard', label: 'Dashboard', icon: Home },
+    { href: '/dashboard?role=patient', label: 'Dashboard', icon: Home },
     { href: '/appointments', label: 'Appointments', icon: Calendar },
     { href: '/chat', label: 'Chat', icon: MessageCircle },
     { href: '/billing', label: 'Billing', icon: CreditCard },
@@ -49,7 +51,7 @@ export function AppLayout({ children, role }: AppLayoutProps) {
   ];
 
   const doctorNav = [
-    { href: '/dashboard', label: 'Dashboard', icon: Home },
+    { href: '/dashboard?role=doctor', label: 'Dashboard', icon: Home },
     { href: '/appointments', label: 'Appointments', icon: Calendar },
     { href: '/chat', label: 'Chat', icon: MessageCircle },
     { href: '/symptom-analyzer', label: 'Symptom Analyzer', icon: BrainCircuit },
@@ -72,7 +74,7 @@ export function AppLayout({ children, role }: AppLayoutProps) {
           hidden={isChatPage}
         >
           <SidebarHeader className="p-4 flex items-center gap-2">
-            <Link href="/dashboard" className="flex items-center gap-2">
+            <Link href={`/dashboard?role=${role}`} className="flex items-center gap-2">
               <Logo className="w-8 h-8 text-primary" />
               <span className="text-lg font-headline font-semibold text-foreground group-data-[collapsible=icon]:hidden">
                 MediSync Pro
@@ -113,7 +115,7 @@ export function AppLayout({ children, role }: AppLayoutProps) {
               <Button variant="ghost" size="icon">
                 <Bell className="h-5 w-5" />
               </Button>
-              <UserNav />
+              <UserNav role={role} />
             </div>
           </AppHeader>
           <main className="flex-1 p-4 md:p-8 bg-background">{children}</main>

@@ -9,6 +9,8 @@ import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
 const transactions = [
   { id: "INV001", date: "2024-07-22", description: "Consultation with Dr. Sharma", amount: "₹500", status: "Paid" },
@@ -17,9 +19,11 @@ const transactions = [
   { id: "INV004", date: "2024-08-01", description: "Cardiology Consultation", amount: "₹1500", status: "Pending" },
 ];
 
-export default function BillingPage() {
+function BillingContent() {
     const qrCodeImage = PlaceHolderImages.find((img) => img.id === 'qr-code');
     const { toast } = useToast();
+    const searchParams = useSearchParams();
+    const role = searchParams.get('role') || 'patient';
 
     const handleDownload = (invoiceId: string) => {
         toast({
@@ -29,7 +33,7 @@ export default function BillingPage() {
     }
 
     return (
-        <AppLayout role="patient">
+        <AppLayout role={role as 'patient' | 'doctor'}>
             <div className="grid gap-8 md:grid-cols-3">
                 <div className="md:col-span-2">
                     <Card>
@@ -99,4 +103,13 @@ export default function BillingPage() {
             </div>
         </AppLayout>
     );
+}
+
+
+export default function BillingPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <BillingContent />
+        </Suspense>
+    )
 }

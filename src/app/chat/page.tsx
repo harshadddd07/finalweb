@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { AppLayout } from '@/components/layout/app-layout';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { Sidebar, SidebarContent, SidebarHeader, SidebarTrigger } from '@/components/ui/sidebar';
 import { getChatResponse } from '@/ai/flows/chat-flow';
 import { useToast } from '@/hooks/use-toast';
+import { useSearchParams } from 'next/navigation';
 
 const aiAssistant = { id: 0, name: 'AI Medical Assistant', specialty: 'General Information', avatar: '', online: true, isAi: true };
 
@@ -80,13 +81,16 @@ function DoctorList({selectedContact, onSelectContact}: {selectedContact: any, o
     )
 }
 
-export default function ChatPage() {
+function ChatContent() {
     const [messages, setMessages] = useState(initialMessages);
     const [newMessage, setNewMessage] = useState('');
     const [selectedContact, setSelectedContact] = useState(allContacts[0]);
     const [isTyping, setIsTyping] = useState(false);
     const chatContainerRef = useRef<HTMLDivElement>(null);
     const { toast } = useToast();
+    const searchParams = useSearchParams();
+    const role = searchParams.get('role') === 'doctor' ? 'doctor' : 'patient';
+
 
     const currentMessages = messages[selectedContact.id] || [];
 
@@ -150,7 +154,7 @@ export default function ChatPage() {
 
 
   return (
-    <AppLayout role="patient">
+    <AppLayout role={role}>
         <Card className="h-[calc(100vh-10rem)] w-full grid md:grid-cols-3 lg:grid-cols-4">
           <div className="hidden flex-col border-r bg-primary-foreground/50 dark:bg-card/50 md:flex">
              <DoctorList selectedContact={selectedContact} onSelectContact={setSelectedContact} />
@@ -269,4 +273,12 @@ export default function ChatPage() {
         </Sidebar>
     </AppLayout>
   );
+}
+
+export default function ChatPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ChatContent />
+        </Suspense>
+    )
 }

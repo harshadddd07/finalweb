@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { MoreHorizontal, ArrowLeft } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
 const doctors = [
     { name: "Dr. Priya Sharma", specialty: "Cardiologist", avatar: "https://picsum.photos/seed/doc1/100/100" },
@@ -29,15 +31,15 @@ const doctorAppointments = [
     { patient: "Myra Reddy", time: "03:30 PM", status: "Confirmed" },
 ]
 
-export default function AppointmentsPage() {
+function AppointmentsContent() {
     const [date, setDate] = useState<Date | undefined>(new Date());
     const [step, setStep] = useState(1);
     const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null);
     const [selectedDoctor, setSelectedDoctor] = useState<(typeof doctors[0]) | null>(null);
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
+    const searchParams = useSearchParams();
     
-    // In a real app, this role would come from auth context
-    const role = 'patient'; 
+    const role = searchParams.get('role') === 'doctor' ? 'doctor' : 'patient'; 
 
     const filteredDoctors = selectedSpecialty ? doctors.filter(d => d.specialty === selectedSpecialty) : [];
 
@@ -224,4 +226,12 @@ export default function AppointmentsPage() {
             </div>
         </AppLayout>
     );
+}
+
+export default function AppointmentsPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <AppointmentsContent />
+        </Suspense>
+    )
 }

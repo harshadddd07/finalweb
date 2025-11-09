@@ -5,7 +5,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import type { LucideIcon } from 'lucide-react';
 
@@ -21,16 +21,19 @@ interface MainNavProps {
 
 export function MainNav({ items }: MainNavProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   return (
     <SidebarMenu>
       {items.map((item) => {
         const Icon = item.icon;
+        const isActive = pathname === item.href.split('?')[0];
+
         return (
           <SidebarMenuItem key={item.href}>
             <SidebarMenuButton
               asChild
-              isActive={pathname === item.href}
+              isActive={isActive}
               tooltip={item.label}
             >
               <Link href={item.href}>
