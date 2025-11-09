@@ -7,7 +7,7 @@ import { ArrowUpRight, Users, CalendarCheck, BarChart, MessageCircle, BrainCircu
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ResponsiveContainer, BarChart as BarGraph, XAxis, YAxis, Tooltip, Bar, PieChart, Pie, Cell, Legend, CartesianGrid } from 'recharts';
-import { ChartTooltipContent, ChartContainer, ChartConfig } from "@/components/ui/chart";
+import { ChartTooltipContent, ChartContainer, ChartConfig, ChartLegendContent } from "@/components/ui/chart";
 
 const appointmentRequests = [
     { name: "Aarav Patel", avatar: "https://picsum.photos/seed/pat1/100/100", email: "aarav@example.com", reason: "Annual Check-up" },
@@ -96,7 +96,7 @@ export default function DoctorDashboard() {
                 <CardContent>
                     <p className="text-xs text-muted-foreground mb-4">AI-powered tool to assist in diagnosis.</p>
                      <Button asChild size="sm">
-                        <Link href="/symptom-analyzer">Launch Tool</Link>
+                        <Link href="/symptom-analyzer?role=doctor">Launch Tool</Link>
                     </Button>
                 </CardContent>
             </Card>
@@ -108,7 +108,7 @@ export default function DoctorDashboard() {
                 <CardContent>
                     <p className="text-xs text-muted-foreground mb-4">Communicate with your patients in real-time.</p>
                      <Button asChild size="sm" variant="secondary">
-                        <Link href="/chat">Open Chat</Link>
+                        <Link href="/chat?role=doctor">Open Chat</Link>
                     </Button>
                 </CardContent>
             </Card>
@@ -122,7 +122,7 @@ export default function DoctorDashboard() {
                         <CardDescription>Patients waiting for confirmation.</CardDescription>
                     </div>
                     <Button asChild size="sm" className="ml-auto gap-1">
-                        <Link href="/appointments">View All <ArrowUpRight className="h-4 w-4" /></Link>
+                        <Link href="/appointments?role=doctor">View All <ArrowUpRight className="h-4 w-4" /></Link>
                     </Button>
                 </CardHeader>
                 <CardContent>

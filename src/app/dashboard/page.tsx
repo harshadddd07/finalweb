@@ -18,23 +18,28 @@ function DashboardContent() {
 }
 
 function DashboardLoading() {
+  const searchParams = useSearchParams();
+  const role = searchParams.get('role') === 'doctor' ? 'doctor' : 'patient';
+  
   return (
-    <div className="p-8">
-      <Skeleton className="h-10 w-1/4 mb-8" />
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-        <Skeleton className="h-24" />
-        <Skeleton className="h-24" />
-        <Skeleton className="h-24" />
-        <Skeleton className="h-24" />
-      </div>
-      <div className="grid gap-8 lg:grid-cols-3">
-        <Skeleton className="lg:col-span-2 h-96" />
-        <div className="space-y-8">
-          <Skeleton className="h-64" />
-          <Skeleton className="h-48" />
+    <AppLayout role={role}>
+      <div className="p-8">
+        <Skeleton className="h-10 w-1/4 mb-8" />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+          <Skeleton className="h-24" />
+          <Skeleton className="h-24" />
+          <Skeleton className="h-24" />
+          <Skeleton className="h-24" />
+        </div>
+        <div className="grid gap-8 lg:grid-cols-3">
+          <Skeleton className="lg:col-span-2 h-96" />
+          <div className="space-y-8">
+            <Skeleton className="h-64" />
+            <Skeleton className="h-48" />
+          </div>
         </div>
       </div>
-    </div>
+    </AppLayout>
   )
 }
 
