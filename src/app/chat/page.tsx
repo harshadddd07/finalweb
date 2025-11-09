@@ -89,7 +89,7 @@ export default function ChatPage() {
                     </div>
                 </div>
                 <div className="ml-auto flex items-center gap-2">
-                    <Button variant="ghost" size="icon" onClick={() => setVideoCall(true)}>
+                    <Button variant="ghost" size="icon" onClick={() => setVideoCall(!isVideoCall)}>
                         <Video className="h-5 w-5" />
                     </Button>
                     <Button variant="ghost" size="icon">
@@ -98,62 +98,62 @@ export default function ChatPage() {
                 </div>
             </div>
 
-            {isVideoCall ? (
-                <div className="relative flex-1 bg-black">
-                     {mainVideo && <Image src={mainVideo.imageUrl} alt={mainVideo.description} layout="fill" objectFit="cover" />}
-                    <div className="absolute bottom-4 right-4 w-48 h-36 rounded-lg overflow-hidden border-2 border-white">
-                        {selfVideo && <Image src={selfVideo.imageUrl} alt={selfVideo.description} layout="fill" objectFit="cover" />}
+            <div className="flex-1 flex flex-col overflow-hidden">
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                {messages.map((message) => (
+                    <div key={message.id} className={`flex items-end gap-2 ${message.sent ? 'justify-end' : ''}`}>
+                        {!message.sent && (
+                        <Avatar className="w-8 h-8">
+                            <AvatarImage src={PlaceHolderImages.find(img => img.id === 'avatar-2')?.imageUrl} />
+                            <AvatarFallback>ER</AvatarFallback>
+                        </Avatar>
+                        )}
+                        <div className={`rounded-lg p-3 max-w-xs lg:max-w-md ${message.sent ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
+                        <p className="text-sm">{message.text}</p>
+                        <p className="text-xs mt-1 text-right opacity-70">{message.time}</p>
+                        </div>
+                        {message.sent && (
+                        <Avatar className="w-8 h-8">
+                            <AvatarImage src={PlaceHolderImages.find(img => img.id === 'avatar-1')?.imageUrl} />
+                            <AvatarFallback>ME</AvatarFallback>
+                        </Avatar>
+                        )}
                     </div>
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-4">
-                        <Button variant="destructive" size="lg" onClick={() => setVideoCall(false)}>End Call</Button>
+                ))}
+                </div>
+
+                {isVideoCall && (
+                    <div className="relative bg-black min-h-[300px] border-t">
+                        {mainVideo && <Image src={mainVideo.imageUrl} alt={mainVideo.description} layout="fill" objectFit="cover" />}
+                        <div className="absolute bottom-4 right-4 w-48 h-36 rounded-lg overflow-hidden border-2 border-white">
+                            {selfVideo && <Image src={selfVideo.imageUrl} alt={selfVideo.description} layout="fill" objectFit="cover" />}
+                        </div>
+                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-4">
+                            <Button variant="destructive" size="lg" onClick={() => setVideoCall(false)}>End Call</Button>
+                        </div>
+                    </div>
+                )}
+                
+                <div className="p-4 border-t">
+                    <div className="relative">
+                        <Input
+                            placeholder="Type a message..."
+                            className="pr-24"
+                            value={newMessage}
+                            onChange={(e) => setNewMessage(e.target.value)}
+                            onKeyPress={handleKeyPress}
+                        />
+                        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
+                        <Button variant="ghost" size="icon">
+                            <Paperclip className="h-5 w-5" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={handleSendMessage}>
+                            <Send className="h-5 w-5" />
+                        </Button>
+                        </div>
                     </div>
                 </div>
-            ) : (
-                <>
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                    {messages.map((message) => (
-                        <div key={message.id} className={`flex items-end gap-2 ${message.sent ? 'justify-end' : ''}`}>
-                            {!message.sent && (
-                            <Avatar className="w-8 h-8">
-                                <AvatarImage src={PlaceHolderImages.find(img => img.id === 'avatar-2')?.imageUrl} />
-                                <AvatarFallback>ER</AvatarFallback>
-                            </Avatar>
-                            )}
-                            <div className={`rounded-lg p-3 max-w-xs lg:max-w-md ${message.sent ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
-                            <p className="text-sm">{message.text}</p>
-                            <p className="text-xs mt-1 text-right opacity-70">{message.time}</p>
-                            </div>
-                            {message.sent && (
-                            <Avatar className="w-8 h-8">
-                                <AvatarImage src={PlaceHolderImages.find(img => img.id === 'avatar-1')?.imageUrl} />
-                                <AvatarFallback>ME</AvatarFallback>
-                            </Avatar>
-                            )}
-                        </div>
-                    ))}
-                    </div>
-                    <div className="p-4 border-t">
-                        <div className="relative">
-                            <Input
-                                placeholder="Type a message..."
-                                className="pr-24"
-                                value={newMessage}
-                                onChange={(e) => setNewMessage(e.target.value)}
-                                onKeyPress={handleKeyPress}
-                            />
-                            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
-                            <Button variant="ghost" size="icon">
-                                <Paperclip className="h-5 w-5" />
-                            </Button>
-                            <Button variant="ghost" size="icon" onClick={handleSendMessage}>
-                                <Send className="h-5 w-5" />
-                            </Button>
-                            </div>
-                        </div>
-                    </div>
-                </>
-            )}
-            
+            </div>
           </div>
         </Card>
     </AppLayout>
