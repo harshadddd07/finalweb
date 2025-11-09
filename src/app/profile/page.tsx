@@ -1,6 +1,5 @@
 'use client';
 
-import { AppLayout } from "@/components/layout/app-layout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,18 +7,29 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Textarea } from "@/components/ui/textarea";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 export default function ProfilePage() {
     const avatar = PlaceHolderImages.find((img) => img.id === 'avatar-1');
     const role = 'patient'; // This would be dynamic in a real app
 
     return (
-        <AppLayout role={role}>
-            <div className="space-y-8">
-                <div>
-                    <h1 className="text-3xl font-bold font-headline">My Profile</h1>
-                    <p className="text-muted-foreground">Manage your personal information and account settings.</p>
+        <div className="min-h-screen bg-background p-4 sm:p-6 md:p-8">
+            <div className="max-w-6xl mx-auto">
+                <div className="flex items-center gap-4 mb-8">
+                    <Button variant="outline" size="icon" asChild>
+                        <Link href="/dashboard">
+                            <ArrowLeft className="h-4 w-4" />
+                            <span className="sr-only">Back to Dashboard</span>
+                        </Link>
+                    </Button>
+                    <div>
+                        <h1 className="text-3xl font-bold font-headline">My Profile</h1>
+                        <p className="text-muted-foreground">Manage your personal information and account settings.</p>
+                    </div>
                 </div>
+
                 <div className="grid lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-1">
                         <Card>
@@ -80,7 +90,7 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                <Card>
+                <Card className="mt-8">
                     <CardHeader>
                         <CardTitle>Account Settings</CardTitle>
                         <CardDescription>Manage your account preferences.</CardDescription>
@@ -94,10 +104,10 @@ export default function ProfilePage() {
                     </CardContent>
                 </Card>
 
-                <div className="flex justify-end">
+                <div className="flex justify-end mt-8">
                     <Button size="lg">Save All Changes</Button>
                 </div>
             </div>
-        </AppLayout>
+        </div>
     );
 }
