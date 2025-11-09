@@ -81,7 +81,7 @@ export default function BillingPage() {
                             )}
                             <div className="space-y-1">
                                 <p className="text-sm font-medium">UPI ID:</p>
-                                <p className="font-mono text-lg p-2 bg-muted rounded-md">medisync@okhdfcbank</p>
+                                <p className="font-mono text-lg p-2 bg-muted rounded-md">aditirai44530@okaxis</p>
                             </div>
                              <Button className="w-full">Copy UPI ID</Button>
                         </CardContent>

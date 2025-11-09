@@ -8,8 +8,8 @@
     },
     {
       "id": "qr-code",
-      "description": "QR Code for UPI payments to medisync@okhdfcbank",
-      "imageUrl": "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=medisync@okhdfcbank%26pn=MediSync%20Pro",
+      "description": "QR Code for UPI payments to aditirai44530@okaxis",
+      "imageUrl": "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=aditirai44530@okaxis%26pn=MediSync%20Pro",
       "imageHint": "qr code"
     },
     {
