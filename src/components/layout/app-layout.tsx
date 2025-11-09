@@ -5,6 +5,7 @@ import {
   SidebarHeader,
   SidebarContent,
   SidebarFooter,
+  SidebarTrigger,
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -56,6 +57,10 @@ export function AppLayout({ children, role }: AppLayoutProps) {
   ];
 
   const navItems = role === 'doctor' ? doctorNav : patientNav;
+  
+  // The chat page has its own sidebar for doctor selection on mobile.
+  const isChatPage = pathname === '/chat';
+
 
   return (
     <SidebarProvider>
@@ -64,6 +69,7 @@ export function AppLayout({ children, role }: AppLayoutProps) {
           variant="sidebar"
           collapsible="icon"
           className="bg-primary-foreground dark:bg-card border-r dark:border-border/20"
+          hidden={isChatPage}
         >
           <SidebarHeader className="p-4 flex items-center gap-2">
             <Link href="/dashboard" className="flex items-center gap-2">
@@ -97,6 +103,12 @@ export function AppLayout({ children, role }: AppLayoutProps) {
         </Sidebar>
         <div className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden">
           <AppHeader>
+             {!isChatPage && (
+                <div className="md:hidden">
+                    <SidebarTrigger />
+                </div>
+            )}
+            <div className="flex-1" />
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="icon">
                 <Bell className="h-5 w-5" />

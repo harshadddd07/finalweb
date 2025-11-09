@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Paperclip, Phone, Send, Video } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Sidebar, SidebarContent, SidebarHeader, SidebarTrigger } from '@/components/ui/sidebar';
 
 const doctors = [
     { id: 1, name: "Dr. Priya Sharma", specialty: "Cardiologist", avatar: "https://picsum.photos/seed/doc1/100/100", online: true },
@@ -20,6 +22,38 @@ const initialMessages = [
   { id: 2, sender: 'Me', text: 'I am feeling a bit better, thank you for asking!', time: '10:31 AM', sent: true },
   { id: 3, sender: 'Dr. Priya Sharma', text: 'That is great to hear. Remember to take your medication as prescribed.', time: '10:32 AM', sent: false },
 ];
+
+function DoctorList({selectedDoctor, onSelectDoctor}: {selectedDoctor: any, onSelectDoctor: (doctor: any) => void}) {
+    return(
+        <>
+            <CardHeader>
+                <Input placeholder="Search doctors..." />
+            </CardHeader>
+            <CardContent className="flex-1 overflow-auto p-2">
+                <div className="flex flex-col gap-1">
+                {doctors.map((doctor) => (
+                    <Button 
+                        key={doctor.id} 
+                        variant={selectedDoctor.id === doctor.id ? 'secondary' : 'ghost'} 
+                        className="w-full justify-start h-16 gap-2 p-2"
+                        onClick={() => onSelectDoctor(doctor)}
+                    >
+                        <Avatar className="w-10 h-10 border-2 border-background">
+                            <AvatarImage src={doctor.avatar} />
+                            <AvatarFallback>{doctor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                            {doctor.online && <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />}
+                        </Avatar>
+                        <div className="text-left">
+                            <div className="font-semibold">{doctor.name}</div>
+                            <div className="text-xs text-muted-foreground">{doctor.specialty}</div>
+                        </div>
+                    </Button>
+                ))}
+                </div>
+            </CardContent>
+        </>
+    )
+}
 
 export default function ChatPage() {
     const [messages, setMessages] = useState(initialMessages);
@@ -49,35 +83,14 @@ export default function ChatPage() {
   return (
     <AppLayout role="patient">
         <Card className="h-[calc(100vh-10rem)] w-full grid md:grid-cols-3 lg:grid-cols-4">
-          <div className="flex-col border-r bg-primary-foreground/50 dark:bg-card/50 md:flex">
-            <CardHeader>
-                <Input placeholder="Search doctors..." />
-            </CardHeader>
-            <CardContent className="flex-1 overflow-auto p-2">
-                <div className="flex flex-col gap-1">
-                {doctors.map((doctor) => (
-                    <Button 
-                        key={doctor.id} 
-                        variant={selectedDoctor.id === doctor.id ? 'secondary' : 'ghost'} 
-                        className="w-full justify-start h-16 gap-2 p-2"
-                        onClick={() => setSelectedDoctor(doctor)}
-                    >
-                        <Avatar className="w-10 h-10 border-2 border-background">
-                            <AvatarImage src={doctor.avatar} />
-                            <AvatarFallback>{doctor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                            {doctor.online && <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />}
-                        </Avatar>
-                        <div className="text-left">
-                            <div className="font-semibold">{doctor.name}</div>
-                            <div className="text-xs text-muted-foreground">{doctor.specialty}</div>
-                        </div>
-                    </Button>
-                ))}
-                </div>
-            </CardContent>
+          <div className="hidden flex-col border-r bg-primary-foreground/50 dark:bg-card/50 md:flex">
+             <DoctorList selectedDoctor={selectedDoctor} onSelectDoctor={setSelectedDoctor} />
           </div>
           <div className="md:col-span-2 lg:col-span-3 flex flex-col">
             <div className="flex items-center p-2 border-b">
+                <div className="md:hidden pr-2">
+                    <SidebarTrigger />
+                </div>
                 <div className="flex items-center gap-2">
                     <Avatar>
                         <AvatarImage src={selectedDoctor.avatar} />
@@ -146,6 +159,11 @@ export default function ChatPage() {
             </div>
           </div>
         </Card>
+        <Sidebar variant="sidebar" side="left" className="md:hidden">
+            <SidebarContent className="flex flex-col bg-card p-0">
+                <DoctorList selectedDoctor={selectedDoctor} onSelectDoctor={setSelectedDoctor} />
+            </SidebarContent>
+        </Sidebar>
     </AppLayout>
   );
 }

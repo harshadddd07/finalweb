@@ -55,7 +55,7 @@ export default function ProfilePage() {
                                 <CardDescription>Update your personal details here.</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
-                                <div className="grid md:grid-cols-2 gap-6">
+                                <div className="grid sm:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <Label htmlFor="fullName">Full Name</Label>
                                         <Input id="fullName" defaultValue="Aarav Patel" />
@@ -74,12 +74,12 @@ export default function ProfilePage() {
                                     </div>
                                 </div>
                                 {role === 'doctor' && (
-                                    <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="grid sm:grid-cols-2 gap-6">
                                         <div className="space-y-2">
                                             <Label htmlFor="specialty">Specialty</Label>
                                             <Input id="specialty" defaultValue="Cardiology" />
                                         </div>
-                                        <div className="md:col-span-2 space-y-2">
+                                        <div className="sm:col-span-2 space-y-2">
                                             <Label htmlFor="bio">Professional Bio</Label>
                                             <Textarea id="bio" placeholder="Tell us about your professional background..." defaultValue="Experienced Cardiologist with over 15 years in clinical practice. Specializing in..." />
                                         </div>

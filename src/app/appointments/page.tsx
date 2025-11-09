@@ -107,7 +107,7 @@ export default function AppointmentsPage() {
                         <CardContent>
                             {/* Step 1: Select Specialty */}
                             {step === 1 && (
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                <div className="grid grid-cols-2 gap-4">
                                     {specialties.map(specialty => (
                                         <Button key={specialty} variant="outline" className="h-20 text-base" onClick={() => { setSelectedSpecialty(specialty); setStep(2); }}>
                                             {specialty}
@@ -139,12 +139,12 @@ export default function AppointmentsPage() {
                                         mode="single"
                                         selected={date}
                                         onSelect={setDate}
-                                        className="rounded-md border w-fit"
+                                        className="rounded-md border w-full sm:w-fit mx-auto"
                                         disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() - 1))}
                                     />
                                     <div>
-                                        <h3 className="text-lg font-medium mb-4">Available Slots</h3>
-                                        <div className="grid grid-cols-3 gap-2">
+                                        <h3 className="text-lg font-medium mb-4 text-center md:text-left">Available Slots</h3>
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                                             {timeSlots.map(time => (
                                                 <Button 
                                                     key={time} 
@@ -180,7 +180,7 @@ export default function AppointmentsPage() {
                                             <p><strong>Time:</strong> {selectedTime}</p>
                                         </div>
                                     </div>
-                                    <div className="flex gap-4">
+                                    <div className="flex flex-col sm:flex-row gap-4">
                                          <Button className="w-full" onClick={resetFlow}>Confirm Appointment</Button>
                                          <Button className="w-full" variant="outline" onClick={() => setStep(3)}>Change Date/Time</Button>
                                     </div>

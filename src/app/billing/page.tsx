@@ -33,7 +33,7 @@ export default function BillingPage() {
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>Invoice ID</TableHead>
-                                        <TableHead>Date</TableHead>
+                                        <TableHead className="hidden sm:table-cell">Date</TableHead>
                                         <TableHead>Description</TableHead>
                                         <TableHead>Amount</TableHead>
                                         <TableHead>Status</TableHead>
@@ -44,7 +44,7 @@ export default function BillingPage() {
                                     {transactions.map((tx) => (
                                         <TableRow key={tx.id}>
                                             <TableCell className="font-medium">{tx.id}</TableCell>
-                                            <TableCell>{tx.date}</TableCell>
+                                            <TableCell className="hidden sm:table-cell">{tx.date}</TableCell>
                                             <TableCell>{tx.description}</TableCell>
                                             <TableCell>{tx.amount}</TableCell>
                                             <TableCell>
