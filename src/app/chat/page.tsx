@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { AppLayout } from '@/components/layout/app-layout';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Paperclip, Phone, Send, Video } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
+import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const contacts = [
   { id: 1, name: 'Dr. Evelyn Reed', specialty: 'Cardiologist', avatarId: 'avatar-2', online: true },
@@ -24,9 +26,46 @@ const initialMessages = [
 export default function ChatPage() {
     const [isVideoCall, setVideoCall] = useState(false);
     const mainVideo = PlaceHolderImages.find(img => img.id === 'video-call-main');
-    const selfVideo = PlaceHolderImages.find(img => img.id === 'video-call-self');
     const [messages, setMessages] = useState(initialMessages);
     const [newMessage, setNewMessage] = useState('');
+
+    const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+    const mainVideoRef = useRef<HTMLVideoElement>(null);
+    const selfVideoRef = useRef<HTMLVideoElement>(null);
+    const { toast } = useToast();
+    
+    useEffect(() => {
+        if (!isVideoCall) return;
+
+        const getCameraPermission = async () => {
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({video: true});
+            setHasCameraPermission(true);
+    
+            if (selfVideoRef.current) {
+                selfVideoRef.current.srcObject = stream;
+            }
+          } catch (error) {
+            console.error('Error accessing camera:', error);
+            setHasCameraPermission(false);
+            toast({
+              variant: 'destructive',
+              title: 'Camera Access Denied',
+              description: 'Please enable camera permissions in your browser settings to use this app.',
+            });
+          }
+        };
+    
+        getCameraPermission();
+
+        // Cleanup function to stop video stream
+        return () => {
+            if (selfVideoRef.current && selfVideoRef.current.srcObject) {
+                const stream = selfVideoRef.current.srcObject as MediaStream;
+                stream.getTracks().forEach(track => track.stop());
+            }
+        }
+      }, [isVideoCall, toast]);
 
     const handleSendMessage = () => {
         if (newMessage.trim() === '') return;
@@ -123,12 +162,30 @@ export default function ChatPage() {
                 </div>
 
                 {isVideoCall && (
-                    <div className="relative bg-black min-h-[300px] border-t">
-                        {mainVideo && <Image src={mainVideo.imageUrl} alt={mainVideo.description} layout="fill" objectFit="cover" />}
-                        <div className="absolute bottom-4 right-4 w-48 h-36 rounded-lg overflow-hidden border-2 border-white">
-                            {selfVideo && <Image src={selfVideo.imageUrl} alt={selfVideo.description} layout="fill" objectFit="cover" />}
+                    <div className="relative bg-black min-h-[300px] border-t p-4 flex flex-col gap-4">
+                         {mainVideo && <Image src={mainVideo.imageUrl} alt={mainVideo.description} layout="fill" objectFit="cover" />}
+                        
+                        <div className="absolute top-4 right-4 w-48 h-36 rounded-lg overflow-hidden border-2 border-white z-10">
+                           <video ref={selfVideoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
+                           {hasCameraPermission === false && (
+                            <div className="absolute inset-0 bg-black/70 flex items-center justify-center text-white text-center p-2">
+                                Camera access denied
+                            </div>
+                           )}
                         </div>
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-4">
+
+                         <div className="flex-1" />
+
+                        {hasCameraPermission === false && (
+                            <Alert variant="destructive" className="max-w-md mx-auto">
+                                <AlertTitle>Camera Access Required</AlertTitle>
+                                <AlertDescription>
+                                    Please allow camera access in your browser settings to use this feature.
+                                </AlertDescription>
+                            </Alert>
+                        )}
+                        
+                        <div className="flex justify-center gap-4 z-10">
                             <Button variant="destructive" size="lg" onClick={() => setVideoCall(false)}>End Call</Button>
                         </div>
                     </div>
