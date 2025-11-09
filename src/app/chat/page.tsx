@@ -22,7 +22,16 @@ const doctors = [
     { id: 4, name: "Dr. Vikram Singh", specialty: "Neurologist", avatar: "https://picsum.photos/seed/doc4/100/100", online: false, isAi: false },
 ];
 
-const allContacts = [aiAssistant, ...doctors];
+const patients = [
+    { id: 101, name: "Aarav Patel", specialty: "Last check-up: 2 weeks ago", avatar: "https://picsum.photos/seed/pat1/100/100", online: true, isAi: false },
+    { id: 102, name: "Saanvi Singh", specialty: "Last check-up: 1 month ago", avatar: "https://picsum.photos/seed/pat2/100/100", online: false, isAi: false },
+    { id: 103, name: "Advik Kumar", specialty: "Last check-up: 3 months ago", avatar: "https://picsum.photos/seed/pat3/100/100", online: true, isAi: false },
+    { id: 104, name: "Myra Reddy", specialty: "New Patient", avatar: "https://picsum.photos/seed/pat4/100/100", online: true, isAi: false },
+];
+
+
+const patientContacts = [...patients];
+const doctorContacts = [aiAssistant, ...doctors];
 
 const initialMessages: Record<number, { id: number; sender: string; text: string; time: string; sent: boolean }[]> = {
   0: [
@@ -40,10 +49,19 @@ const initialMessages: Record<number, { id: number; sender: string; text: string
   4: [
       { id: 1, sender: 'AI Assistant', text: 'Hello! I am your AI Medical Assistant. Dr. Vikram Singh is currently offline, but I am here to help with any general questions you may have. Please remember, I am an AI assistant and not a substitute for professional medical advice. Consult with a qualified healthcare provider for any medical concerns.', time: '11:05 AM', sent: false },
   ],
+  101: [
+    { id: 1, sender: "Aarav Patel", text: "Good morning, Doctor. I've been experiencing a persistent cough for the last few days.", time: '09:15 AM', sent: true },
+    { id: 2, sender: "Me", text: "Good morning, Aarav. I see. Any other symptoms? Fever, or shortness of breath?", time: '09:16 AM', sent: false },
+  ],
+  102: [
+    { id: 1, sender: "Saanvi Singh", text: "Hi Dr. Sharma, I wanted to ask about the side effects of the new medication.", time: 'Yesterday', sent: true },
+  ],
+  103: [],
+  104: [],
 };
 
 
-function DoctorList({selectedContact, onSelectContact}: {selectedContact: any, onSelectContact: (contact: any) => void}) {
+function ContactList({contacts, selectedContact, onSelectContact}: {contacts: any[], selectedContact: any, onSelectContact: (contact: any) => void}) {
     return(
         <>
             <CardHeader>
@@ -51,7 +69,7 @@ function DoctorList({selectedContact, onSelectContact}: {selectedContact: any, o
             </CardHeader>
             <CardContent className="flex-1 overflow-auto p-2">
                 <div className="flex flex-col gap-1">
-                {allContacts.map((contact) => (
+                {contacts.map((contact) => (
                     <Button 
                         key={contact.id} 
                         variant={selectedContact.id === contact.id ? 'secondary' : 'ghost'} 
@@ -82,15 +100,17 @@ function DoctorList({selectedContact, onSelectContact}: {selectedContact: any, o
 }
 
 function ChatContent() {
+    const searchParams = useSearchParams();
+    const role = searchParams.get('role') === 'doctor' ? 'doctor' : 'patient';
+    
+    const contactList = role === 'doctor' ? patientContacts : doctorContacts;
+    
     const [messages, setMessages] = useState(initialMessages);
     const [newMessage, setNewMessage] = useState('');
-    const [selectedContact, setSelectedContact] = useState(allContacts[0]);
+    const [selectedContact, setSelectedContact] = useState(contactList[0]);
     const [isTyping, setIsTyping] = useState(false);
     const chatContainerRef = useRef<HTMLDivElement>(null);
     const { toast } = useToast();
-    const searchParams = useSearchParams();
-    const role = searchParams.get('role') === 'doctor' ? 'doctor' : 'patient';
-
 
     const currentMessages = messages[selectedContact.id] || [];
 
@@ -99,6 +119,12 @@ function ChatContent() {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         }
     }, [currentMessages, isTyping]);
+    
+    // Update selected contact if role changes
+    useEffect(() => {
+        const newContactList = role === 'doctor' ? patientContacts : doctorContacts;
+        setSelectedContact(newContactList[0]);
+    }, [role]);
 
 
     const handleSendMessage = async () => {
@@ -119,6 +145,14 @@ function ChatContent() {
         if (selectedContact.isAi || !selectedContact.online) {
             setIsTyping(true);
             try {
+                // If patient is chatting with offline doctor, AI responds
+                // If doctor is chatting with offline patient, no AI response for now
+                const shouldAiRespond = role === 'patient';
+                if (!shouldAiRespond) {
+                    setIsTyping(false);
+                    return;
+                };
+
                 const aiResponse = await getChatResponse({
                     history: updatedMessages.map(m => ({ text: m.text, sent: m.sent })),
                     newMessage: newMessage,
@@ -157,7 +191,7 @@ function ChatContent() {
     <AppLayout role={role}>
         <Card className="h-[calc(100vh-10rem)] w-full grid md:grid-cols-3 lg:grid-cols-4">
           <div className="hidden flex-col border-r bg-primary-foreground/50 dark:bg-card/50 md:flex">
-             <DoctorList selectedContact={selectedContact} onSelectContact={setSelectedContact} />
+             <ContactList contacts={contactList} selectedContact={selectedContact} onSelectContact={setSelectedContact} />
           </div>
           <div className="md:col-span-2 lg:col-span-3 flex flex-col">
             <div className="flex items-center p-2 border-b">
@@ -180,12 +214,12 @@ function ChatContent() {
                          <div className="flex items-center gap-1.5">
                             <div className={cn("w-2 h-2 rounded-full", selectedContact.online ? "bg-green-500" : "bg-gray-400")} />
                             <p className={`text-xs ${selectedContact.online ? 'text-green-600' : 'text-muted-foreground'}`}>{selectedContact.online ? 'Online' : 'Offline'}</p>
-                            {(!selectedContact.online || selectedContact.isAi) && <Bot className="w-3 h-3 text-muted-foreground" />}
+                            {(!selectedContact.online && role === 'patient' || selectedContact.isAi) && <Bot className="w-3 h-3 text-muted-foreground" />}
                         </div>
                     </div>
                 </div>
                 <div className="ml-auto flex items-center gap-2">
-                    {!selectedContact.isAi && (
+                    {role === 'patient' && !selectedContact.isAi && (
                         <>
                         <Button variant="ghost" size="icon" asChild>
                             <Link href="/video-call" target="_blank">
@@ -268,7 +302,7 @@ function ChatContent() {
         </Card>
         <Sidebar variant="sidebar" side="left" className="md:hidden">
             <SidebarContent className="flex flex-col bg-card p-0">
-                <DoctorList selectedContact={selectedContact} onSelectContact={setSelectedContact} />
+                <ContactList contacts={contactList} selectedContact={selectedContact} onSelectContact={setSelectedContact} />
             </SidebarContent>
         </Sidebar>
     </AppLayout>
