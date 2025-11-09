@@ -7,14 +7,14 @@ import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const appointmentRequests = [
-    { name: "Liam Johnson", avatar: "https://picsum.photos/seed/pat1/100/100", email: "liam@example.com", date: "2024-08-15", time: "11:00 AM" },
-    { name: "Olivia Smith", avatar: "https://picsum.photos/seed/pat2/100/100", email: "olivia@example.com", date: "2024-08-15", time: "12:30 PM" },
-    { name: "Noah Williams", avatar: "https://picsum.photos/seed/pat3/100/100", email: "noah@example.com", date: "2024-08-16", time: "09:00 AM" },
+    { name: "Aarav Patel", avatar: "https://picsum.photos/seed/pat1/100/100", email: "aarav@example.com", date: "2024-08-15", time: "11:00 AM" },
+    { name: "Saanvi Singh", avatar: "https://picsum.photos/seed/pat2/100/100", email: "saanvi@example.com", date: "2024-08-15", time: "12:30 PM" },
+    { name: "Advik Kumar", avatar: "https://picsum.photos/seed/pat3/100/100", email: "advik@example.com", date: "2024-08-16", time: "09:00 AM" },
 ];
 
 const liveChatMessages = [
-    { name: "Emma Brown", message: "Hello Dr, I have a quick question about my prescription.", avatar: "https://picsum.photos/seed/pat4/100/100", time: "5m ago" },
-    { name: "James Jones", message: "Is it normal to feel dizzy after the medication?", avatar: "https://picsum.photos/seed/pat5/100/100", time: "1h ago" },
+    { name: "Myra Reddy", message: "Hello Dr, I have a quick question about my prescription.", avatar: "https://picsum.photos/seed/pat4/100/100", time: "5m ago" },
+    { name: "Ishaan Joshi", message: "Is it normal to feel dizzy after the medication?", avatar: "https://picsum.photos/seed/pat5/100/100", time: "1h ago" },
 ];
 
 export default function DoctorDashboard() {

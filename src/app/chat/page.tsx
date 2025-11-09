@@ -10,15 +10,15 @@ import { Paperclip, Phone, Send, Video } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const contacts = [
-  { id: 1, name: 'Dr. Evelyn Reed', specialty: 'Cardiologist', avatarId: 'avatar-2', online: true },
-  { id: 2, name: 'Liam Johnson', specialty: 'Patient', avatarId: 'avatar-1', online: false },
-  { id: 3, name: 'Dr. Samuel Green', specialty: 'Dermatologist', avatarId: 'avatar-3', online: true },
+  { id: 1, name: 'Dr. Priya Sharma', specialty: 'Cardiologist', avatarId: 'avatar-2', online: true },
+  { id: 2, name: 'Aarav Patel', specialty: 'Patient', avatarId: 'avatar-1', online: false },
+  { id: 3, name: 'Dr. Rahul Gupta', specialty: 'Dermatologist', avatarId: 'avatar-3', online: true },
 ];
 
 const initialMessages = [
-  { id: 1, sender: 'Dr. Evelyn Reed', text: 'Hello, how are you feeling today?', time: '10:30 AM', sent: false },
+  { id: 1, sender: 'Dr. Priya Sharma', text: 'Hello, how are you feeling today?', time: '10:30 AM', sent: false },
   { id: 2, sender: 'Me', text: 'I am feeling a bit better, thank you for asking!', time: '10:31 AM', sent: true },
-  { id: 3, sender: 'Dr. Evelyn Reed', text: 'That is great to hear. Remember to take your medication as prescribed.', time: '10:32 AM', sent: false },
+  { id: 3, sender: 'Dr. Priya Sharma', text: 'That is great to hear. Remember to take your medication as prescribed.', time: '10:32 AM', sent: false },
 ];
 
 export default function ChatPage() {
@@ -78,10 +78,10 @@ export default function ChatPage() {
                 <div className="flex items-center gap-2">
                     <Avatar>
                         <AvatarImage src={PlaceHolderImages.find(img => img.id === 'avatar-2')?.imageUrl} />
-                        <AvatarFallback>ER</AvatarFallback>
+                        <AvatarFallback>PS</AvatarFallback>
                     </Avatar>
                     <div>
-                        <p className="text-sm font-medium">Dr. Evelyn Reed</p>
+                        <p className="text-sm font-medium">Dr. Priya Sharma</p>
                         <p className="text-xs text-green-500">Online</p>
                     </div>
                 </div>
@@ -104,7 +104,7 @@ export default function ChatPage() {
                         {!message.sent && (
                         <Avatar className="w-8 h-8">
                             <AvatarImage src={PlaceHolderImages.find(img => img.id === 'avatar-2')?.imageUrl} />
-                            <AvatarFallback>ER</AvatarFallback>
+                            <AvatarFallback>PS</AvatarFallback>
                         </Avatar>
                         )}
                         <div className={`rounded-lg p-3 max-w-xs lg:max-w-md ${message.sent ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>

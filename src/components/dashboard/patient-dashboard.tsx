@@ -8,14 +8,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const upcomingAppointments = [
   {
-    doctor: "Dr. Evelyn Reed",
+    doctor: "Dr. Priya Sharma",
     specialty: "Cardiologist",
     date: "2024-08-15",
     time: "10:30 AM",
     avatar: "https://picsum.photos/seed/doc1/100/100"
   },
   {
-    doctor: "Dr. Samuel Green",
+    doctor: "Dr. Rahul Gupta",
     specialty: "Dermatologist",
     date: "2024-08-20",
     time: "02:00 PM",
@@ -74,7 +74,7 @@ export default function PatientDashboard() {
                     <div key={index} className="flex items-center gap-4">
                         <Avatar className="h-9 w-9">
                             <AvatarImage src={appt.avatar} alt={appt.doctor} />
-                            <AvatarFallback>{appt.doctor.charAt(0)}</AvatarFallback>
+                            <AvatarFallback>{appt.doctor.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                         </Avatar>
                         <div className="grid gap-1">
                             <p className="text-sm font-medium leading-none">{appt.doctor}</p>

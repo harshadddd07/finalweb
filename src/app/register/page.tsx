@@ -19,7 +19,7 @@ export default function RegisterPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="full-name">Full name</Label>
-                <Input id="full-name" placeholder="John Doe" required />
+                <Input id="full-name" placeholder="Aarav Patel" required />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="age">Age</Label>
@@ -28,7 +28,7 @@ export default function RegisterPage() {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="m@example.com" required />
+              <Input id="email" type="email" placeholder="aarav@example.com" required />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>

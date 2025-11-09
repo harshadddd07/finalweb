@@ -10,10 +10,10 @@ import { Badge } from '@/components/ui/badge';
 import { Download } from 'lucide-react';
 
 const transactions = [
-  { id: "INV001", date: "2024-07-22", description: "Consultation with Dr. Reed", amount: "$50.00", status: "Paid" },
-  { id: "INV002", date: "2024-07-15", description: "Dermatology Follow-up", amount: "$75.00", status: "Paid" },
-  { id: "INV003", date: "2024-06-30", description: "Pediatric Check-up", amount: "$100.00", status: "Paid" },
-  { id: "INV004", date: "2024-08-01", description: "Cardiology Consultation", amount: "$150.00", status: "Pending" },
+  { id: "INV001", date: "2024-07-22", description: "Consultation with Dr. Sharma", amount: "₹500", status: "Paid" },
+  { id: "INV002", date: "2024-07-15", description: "Dermatology Follow-up", amount: "₹750", status: "Paid" },
+  { id: "INV003", date: "2024-06-30", description: "Pediatric Check-up", amount: "₹1000", status: "Paid" },
+  { id: "INV004", date: "2024-08-01", description: "Cardiology Consultation", amount: "₹1500", status: "Pending" },
 ];
 
 export default function BillingPage() {
@@ -81,7 +81,7 @@ export default function BillingPage() {
                             )}
                             <div className="space-y-1">
                                 <p className="text-sm font-medium">UPI ID:</p>
-                                <p className="font-mono text-lg p-2 bg-muted rounded-md">harshad@213</p>
+                                <p className="font-mono text-lg p-2 bg-muted rounded-md">medisync@okhdfcbank</p>
                             </div>
                              <Button className="w-full">Copy UPI ID</Button>
                         </CardContent>

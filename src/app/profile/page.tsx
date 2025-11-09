@@ -39,7 +39,7 @@ export default function ProfilePage() {
                             <CardContent className="flex flex-col items-center gap-4 text-center">
                                 <Avatar className="h-32 w-32">
                                     {avatar && <AvatarImage src={avatar.imageUrl} alt="User Avatar" />}
-                                    <AvatarFallback className="text-4xl">U</AvatarFallback>
+                                    <AvatarFallback className="text-4xl">AP</AvatarFallback>
                                 </Avatar>
                                 <div className="space-y-2">
                                     <Button>Change Photo</Button>
@@ -58,15 +58,15 @@ export default function ProfilePage() {
                                 <div className="grid md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <Label htmlFor="fullName">Full Name</Label>
-                                        <Input id="fullName" defaultValue="Liam Johnson" />
+                                        <Input id="fullName" defaultValue="Aarav Patel" />
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="email">Email Address</Label>
-                                        <Input id="email" type="email" defaultValue="liam@example.com" disabled />
+                                        <Input id="email" type="email" defaultValue="aarav@example.com" disabled />
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="phone">Phone Number</Label>
-                                        <Input id="phone" type="tel" defaultValue="+1 (555) 123-4567" />
+                                        <Input id="phone" type="tel" defaultValue="+91 98765 43210" />
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="dob">Date of Birth</Label>

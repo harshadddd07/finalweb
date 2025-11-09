@@ -11,16 +11,16 @@ import { Badge } from '@/components/ui/badge';
 import { MoreHorizontal } from 'lucide-react';
 
 const doctors = [
-    { name: "Dr. Evelyn Reed", specialty: "Cardiologist", avatar: "https://picsum.photos/seed/doc1/100/100" },
-    { name: "Dr. Samuel Green", specialty: "Dermatologist", avatar: "https://picsum.photos/seed/doc2/100/100" },
-    { name: "Dr. Isabella Chen", specialty: "Pediatrician", avatar: "https://picsum.photos/seed/doc3/100/100" },
+    { name: "Dr. Priya Sharma", specialty: "Cardiologist", avatar: "https://picsum.photos/seed/doc1/100/100" },
+    { name: "Dr. Rahul Gupta", specialty: "Dermatologist", avatar: "https://picsum.photos/seed/doc2/100/100" },
+    { name: "Dr. Anjali Desai", specialty: "Pediatrician", avatar: "https://picsum.photos/seed/doc3/100/100" },
 ];
 
 const doctorAppointments = [
-    { patient: "Liam Johnson", time: "11:00 AM", status: "Confirmed" },
-    { patient: "Olivia Smith", time: "12:30 PM", status: "Confirmed" },
-    { patient: "Noah Williams", time: "02:00 PM", status: "Pending" },
-    { patient: "Ava Garcia", time: "03:30 PM", status: "Confirmed" },
+    { patient: "Aarav Patel", time: "11:00 AM", status: "Confirmed" },
+    { patient: "Saanvi Singh", time: "12:30 PM", status: "Confirmed" },
+    { patient: "Advik Kumar", time: "02:00 PM", status: "Pending" },
+    { patient: "Myra Reddy", time: "03:30 PM", status: "Confirmed" },
 ]
 
 export default function AppointmentsPage() {
@@ -130,10 +130,10 @@ export default function AppointmentsPage() {
                             <div className="flex items-center">
                                 <Avatar className="h-9 w-9 mr-4">
                                     <AvatarImage src="https://picsum.photos/seed/doc1/100/100" />
-                                    <AvatarFallback>ER</AvatarFallback>
+                                    <AvatarFallback>PS</AvatarFallback>
                                 </Avatar>
                                 <div>
-                                    <p className="font-semibold">Dr. Evelyn Reed</p>
+                                    <p className="font-semibold">Dr. Priya Sharma</p>
                                     <p className="text-sm text-muted-foreground">Aug 15, 2024 - 10:30 AM</p>
                                 </div>
                                 <Badge className="ml-auto">Upcoming</Badge>
@@ -141,10 +141,10 @@ export default function AppointmentsPage() {
                             <div className="flex items-center">
                                 <Avatar className="h-9 w-9 mr-4">
                                     <AvatarImage src="https://picsum.photos/seed/doc2/100/100" />
-                                    <AvatarFallback>SG</AvatarFallback>
+                                    <AvatarFallback>RG</AvatarFallback>
                                 </Avatar>
                                 <div>
-                                    <p className="font-semibold">Dr. Samuel Green</p>
+                                    <p className="font-semibold">Dr. Rahul Gupta</p>
                                     <p className="text-sm text-muted-foreground">July 22, 2024 - 09:00 AM</p>
                                 </div>
                                 <Badge variant="outline" className="ml-auto">Completed</Badge>
