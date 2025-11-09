@@ -10,6 +10,7 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Toolti
 import { ChartTooltipContent } from '@/components/ui/chart';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { ChartContainer } from '../ui/chart';
 
 export default function SymptomAnalyzerClient() {
   const [symptoms, setSymptoms] = useState('');
@@ -48,6 +49,13 @@ export default function SymptomAnalyzerClient() {
       confidence: (d.confidenceLevel * 100).toFixed(0),
   })) || [];
 
+  const chartConfig = {
+    confidence: {
+      label: 'Confidence',
+      color: 'hsl(var(--primary))',
+    },
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       <CardContent>
@@ -75,7 +83,7 @@ export default function SymptomAnalyzerClient() {
             <div className="w-full pt-4">
                 <h3 className="text-lg font-semibold mb-2">Analysis Results</h3>
                 <div className="h-[300px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ChartContainer config={chartConfig}>
                         <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} />
                             <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
@@ -86,7 +94,7 @@ export default function SymptomAnalyzerClient() {
                             />
                             <Bar dataKey="confidence" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                         </BarChart>
-                    </ResponsiveContainer>
+                    </ChartContainer>
                 </div>
             </div>
         )}

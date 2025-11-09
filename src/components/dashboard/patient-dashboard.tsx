@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { MessageCircle, PlusCircle, Video } from "lucide-react";
+import { MessageCircle, PlusCircle, Video, LineChart } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -58,6 +58,22 @@ export default function PatientDashboard() {
                      <CardFooter>
                          <Button asChild className="w-full" variant="secondary">
                             <Link href="/chat">Start Chat</Link>
+                        </Button>
+                    </CardFooter>
+                </Card>
+                <Card className="md:col-span-2">
+                     <CardHeader className="flex flex-row items-center justify-between pb-2">
+                        <CardTitle className="text-sm font-medium">Symptom Analysis</CardTitle>
+                        <LineChart className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-xs text-muted-foreground">
+                           Use our AI-powered tool to analyze your symptoms. This does not replace professional medical advice.
+                        </p>
+                    </CardContent>
+                    <CardFooter>
+                         <Button asChild className="w-full" variant="outline">
+                            <Link href="/symptom-analyzer">Launch Tool</Link>
                         </Button>
                     </CardFooter>
                 </Card>
