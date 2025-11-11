@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { Download } from 'lucide-react';
+import { Download, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
@@ -24,11 +24,21 @@ function BillingContent() {
     const { toast } = useToast();
     const searchParams = useSearchParams();
     const role = searchParams.get('role') || 'patient';
+    const upiId = "aditirai44530@okaxis";
 
     const handleDownload = (invoiceId: string) => {
         toast({
             title: "Invoice Downloaded",
             description: `Your invoice record (${invoiceId}) has been downloaded.`,
+        });
+    }
+
+    const handleCopyUpiId = () => {
+        navigator.clipboard.writeText(upiId).then(() => {
+            toast({
+                title: "UPI ID Copied",
+                description: "The UPI ID has been copied to your clipboard.",
+            });
         });
     }
 
@@ -94,9 +104,12 @@ function BillingContent() {
                             )}
                             <div className="space-y-1">
                                 <p className="text-sm font-medium">UPI ID:</p>
-                                <p className="font-mono text-lg p-2 bg-muted rounded-md">aditirai44530@okaxis</p>
+                                <p className="font-mono text-lg p-2 bg-muted rounded-md">{upiId}</p>
                             </div>
-                             <Button className="w-full">Copy UPI ID</Button>
+                             <Button className="w-full" onClick={handleCopyUpiId}>
+                                <Copy className="mr-2 h-4 w-4" />
+                                Copy UPI ID
+                             </Button>
                         </CardContent>
                     </Card>
                 </div>
