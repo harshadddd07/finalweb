@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useMemo } from 'react';
 import { AppLayout } from '@/components/layout/app-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -33,7 +33,14 @@ function BillingContent() {
 
     const [payerUpiId, setPayerUpiId] = useState('');
     const [paymentAmount, setPaymentAmount] = useState('');
-    const [generatedLink, setGeneratedLink] = useState('');
+
+    const generatedLink = useMemo(() => {
+        if (!payerUpiId || !paymentAmount || Number(paymentAmount) <= 0) {
+            return '';
+        }
+        return createUpiLink(Number(paymentAmount), 'MediSync Pro Bill', payerUpiId);
+    }, [payerUpiId, paymentAmount]);
+
 
     const handleDownload = (invoiceId: string) => {
         toast({
@@ -54,19 +61,6 @@ function BillingContent() {
     
     const pendingInvoice = transactions.find(tx => tx.status === 'Pending');
 
-    const handleGenerateLink = () => {
-        if (!payerUpiId || !paymentAmount) {
-            toast({
-                variant: 'destructive',
-                title: 'Missing Information',
-                description: 'Please enter both a UPI ID and an amount.',
-            });
-            return;
-        }
-        const link = createUpiLink(Number(paymentAmount), 'MediSync Pro Bill', payerUpiId);
-        setGeneratedLink(link);
-    }
-    
     const copyToClipboard = (text: string) => {
         navigator.clipboard.writeText(text);
         toast({
@@ -190,13 +184,15 @@ function BillingContent() {
                                 <Label htmlFor="payment-amount">Amount (₹)</Label>
                                 <Input id="payment-amount" type="number" placeholder="Enter amount" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} />
                             </div>
-                             <Button className="w-full" onClick={handleGenerateLink}>
-                                <Share2 className="mr-2 h-4 w-4" />
-                                Generate Payment Link
+                             <Button className="w-full" asChild disabled={!generatedLink}>
+                                <Link href={generatedLink || '#'} target='_blank'>
+                                    <Share2 className="mr-2 h-4 w-4" />
+                                    Request Payment
+                                </Link>
                             </Button>
                              {generatedLink && (
                                 <div className='space-y-2 pt-2'>
-                                    <Label htmlFor='generated-link'>Share this link:</Label>
+                                    <Label htmlFor='generated-link'>Or share this link:</Label>
                                      <div className="flex gap-2">
                                         <Input id='generated-link' value={generatedLink} readOnly />
                                         <Button variant="outline" size="icon" onClick={() => copyToClipboard(generatedLink)}>
