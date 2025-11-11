@@ -18,18 +18,21 @@ function DashboardContent() {
 }
 
 function DashboardLoading() {
+  // Since this is a fallback for a Suspense boundary wrapping a client component,
+  // this part of the tree will also be client-rendered, so useSearchParams is okay here.
+  // However, to keep it clean, we'll get the role.
   const searchParams = useSearchParams();
   const role = searchParams.get('role') === 'doctor' ? 'doctor' : 'patient';
   
   return (
     <AppLayout role={role}>
-      <div className="p-8">
-        <Skeleton className="h-10 w-1/4 mb-8" />
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-          <Skeleton className="h-24" />
-          <Skeleton className="h-24" />
-          <Skeleton className="h-24" />
-          <Skeleton className="h-24" />
+      <div className="space-y-8">
+        <Skeleton className="h-10 w-1/4" />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Skeleton className="h-32" />
+          <Skeleton className="h-32" />
+          <Skeleton className="h-32" />
+          <Skeleton className="h-32" />
         </div>
         <div className="grid gap-8 lg:grid-cols-3">
           <Skeleton className="lg:col-span-2 h-96" />
