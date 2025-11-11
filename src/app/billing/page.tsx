@@ -9,13 +9,17 @@ import { Badge } from '@/components/ui/badge';
 import { Download, CreditCard, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
 const initialTransactions = [
-  { id: "INV001", date: "2024-07-22", description: "Consultation with Dr. Sharma", amount: "₹500", status: "Paid" },
-  { id: "INV002", date: "2024-07-15", description: "Dermatology Follow-up", amount: "₹750", status: "Paid" },
-  { id: "INV003", date: "2024-06-30", description: "Pediatric Check-up", amount: "₹1000", status: "Paid" },
-  { id: "INV004", date: "2024-08-01", description: "Cardiology Consultation", amount: "₹1500", status: "Pending" },
+  { id: "INV001", date: "2024-07-22", description: "Consultation with Dr. Sharma", amount: 500, status: "Paid" },
+  { id: "INV002", date: "2024-07-15", description: "Dermatology Follow-up", amount: 750, status: "Paid" },
+  { id: "INV003", date: "2024-06-30", description: "Pediatric Check-up", amount: 1000, status: "Paid" },
+  { id: "INV004", date: "2024-08-01", description: "Cardiology Consultation", amount: 1500, status: "Pending" },
 ];
+
+const UPI_ID = 'harshadshewale31@okhdfcbank';
+const PAYEE_NAME = 'MediSync Pro';
 
 function BillingContent() {
     const { toast } = useToast();
@@ -32,24 +36,14 @@ function BillingContent() {
         });
     }
 
-    const handlePayment = async (invoiceId: string) => {
-        setPayingInvoiceId(invoiceId);
-
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        setTransactions(prev => 
-            prev.map(tx => 
-                tx.id === invoiceId ? { ...tx, status: 'Paid' } : tx
-            )
-        );
-
-        toast({
-            title: "Payment Successful",
-            description: `Payment for invoice ${invoiceId} has been completed.`,
-        });
-
-        setPayingInvoiceId(null);
+    const createUpiLink = (amount: number, description: string) => {
+      const upiUrl = new URL('upi://pay');
+      upiUrl.searchParams.set('pa', UPI_ID);
+      upiUrl.searchParams.set('pn', PAYEE_NAME);
+      upiUrl.searchParams.set('am', amount.toString());
+      upiUrl.searchParams.set('cu', 'INR');
+      upiUrl.searchParams.set('tn', `Payment for ${description}`);
+      return upiUrl.toString();
     }
     
     const pendingInvoice = transactions.find(tx => tx.status === 'Pending');
@@ -81,7 +75,7 @@ function BillingContent() {
                                             <TableCell className="font-medium">{tx.id}</TableCell>
                                             <TableCell className="hidden sm:table-cell">{tx.date}</TableCell>
                                             <TableCell>{tx.description}</TableCell>
-                                            <TableCell>{tx.amount}</TableCell>
+                                            <TableCell>₹{tx.amount}</TableCell>
                                             <TableCell>
                                                 <Badge variant={tx.status === 'Paid' ? 'default' : 'destructive'}>{tx.status}</Badge>
                                             </TableCell>
@@ -94,15 +88,12 @@ function BillingContent() {
                                                 ) : (
                                                     <Button 
                                                         size="sm" 
-                                                        onClick={() => handlePayment(tx.id)} 
-                                                        disabled={payingInvoiceId === tx.id}
+                                                        asChild
                                                     >
-                                                        {payingInvoiceId === tx.id ? (
-                                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                        ) : (
+                                                        <Link href={createUpiLink(tx.amount, tx.description)} target="_blank">
                                                             <CreditCard className="mr-2 h-4 w-4" />
-                                                        )}
-                                                        Pay Now
+                                                            Pay Now
+                                                        </Link>
                                                     </Button>
                                                 )}
                                             </TableCell>
@@ -124,7 +115,7 @@ function BillingContent() {
                             <div className='flex justify-between items-center p-4 bg-muted/50 rounded-lg'>
                                 <div>
                                     <p className='text-sm text-muted-foreground'>{pendingInvoice.description}</p>
-                                    <p className='text-xl font-bold'>{pendingInvoice.amount}</p>
+                                    <p className='text-xl font-bold'>₹{pendingInvoice.amount}</p>
                                 </div>
                                 <div className='text-right'>
                                      <p className='text-sm text-muted-foreground'>Invoice ID</p>
@@ -134,17 +125,14 @@ function BillingContent() {
                             <Button 
                                 className="w-full" 
                                 size="lg" 
-                                onClick={() => handlePayment(pendingInvoice.id)}
-                                disabled={payingInvoiceId === pendingInvoice.id}
+                                asChild
                             >
-                               {payingInvoiceId === pendingInvoice.id ? (
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                ) : (
+                               <Link href={createUpiLink(pendingInvoice.amount, pendingInvoice.description)} target="_blank">
                                     <CreditCard className="mr-2 h-4 w-4" />
-                                )}
-                                Pay {pendingInvoice.amount} Now
+                                    Pay ₹{pendingInvoice.amount} Now
+                               </Link>
                             </Button>
-                            <p className='text-center text-xs text-muted-foreground'>You will be redirected to a secure payment gateway.</p>
+                            <p className='text-center text-xs text-muted-foreground'>You will be redirected to your UPI app to complete the payment.</p>
                         </CardContent>
                     </Card>
                    ) : (
