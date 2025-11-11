@@ -29,11 +29,7 @@ function BillingContent() {
     const role = searchParams.get('role') || 'patient';
     
     const [transactions, setTransactions] = useState(initialTransactions);
-    const [payingInvoiceId, setPayingInvoiceId] = useState<string | null>(null);
-
-    const [payerUpiId, setPayerUpiId] = useState('');
-    const [paymentAmount, setPaymentAmount] = useState('');
-
+    
     const createUpiLink = (amount: number, description: string, upiId?: string) => {
       const upiUrl = new URL('upi://pay');
       upiUrl.searchParams.set('pa', upiId || PAYEE_UPI_ID);
@@ -44,22 +40,6 @@ function BillingContent() {
       return upiUrl.toString();
     }
     
-    const [generatedLink, setGeneratedLink] = useState('');
-
-    const handleGenerateLink = () => {
-        if (!payerUpiId || !paymentAmount || Number(paymentAmount) <= 0) {
-            toast({
-                variant: 'destructive',
-                title: 'Invalid Input',
-                description: 'Please enter a valid UPI ID and amount.',
-            });
-            return;
-        }
-        const link = createUpiLink(Number(paymentAmount), 'MediSync Pro Bill', payerUpiId);
-        setGeneratedLink(link);
-    };
-
-
     const handleDownload = (invoiceId: string) => {
         toast({
             title: "Invoice Downloaded",
@@ -181,32 +161,16 @@ function BillingContent() {
                    <Card>
                         <CardHeader>
                             <CardTitle>Request Payment from Others</CardTitle>
-                            <CardDescription>Generate a payment link to share with someone else.</CardDescription>
+                            <CardDescription>Open your UPI app to initiate a payment request.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="payer-upi">Payer's UPI ID</Label>
-                                <Input id="payer-upi" placeholder="example@upi" value={payerUpiId} onChange={(e) => setPayerUpiId(e.target.value)} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="payment-amount">Amount (₹)</Label>
-                                <Input id="payment-amount" type="number" placeholder="Enter amount" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} />
-                            </div>
-                             <Button className="w-full" onClick={handleGenerateLink}>
-                                <Share2 className="mr-2 h-4 w-4" />
-                                Generate Payment Link
+                             <Button className="w-full" asChild>
+                                <Link href="upi://pay">
+                                    <Share2 className="mr-2 h-4 w-4" />
+                                    Request Payment
+                                </Link>
                             </Button>
-                             {generatedLink && (
-                                <div className='space-y-2 pt-2'>
-                                    <Label htmlFor='generated-link'>Share this link:</Label>
-                                     <div className="flex gap-2">
-                                        <Input id='generated-link' value={generatedLink} readOnly />
-                                        <Button variant="outline" size="icon" onClick={() => copyToClipboard(generatedLink)}>
-                                            <Copy className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                </div>
-                            )}
+                            <p className='text-center text-xs text-muted-foreground'>You will be taken to your UPI app to enter the payer's details and amount.</p>
                         </CardContent>
                    </Card>
                 </div>
