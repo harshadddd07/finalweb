@@ -18,14 +18,11 @@ function DashboardContent() {
 }
 
 function DashboardLoading() {
-  // Since this is a fallback for a Suspense boundary wrapping a client component,
-  // this part of the tree will also be client-rendered, so useSearchParams is okay here.
-  // However, to keep it clean, we'll get the role.
-  const searchParams = useSearchParams();
-  const role = searchParams.get('role') === 'doctor' ? 'doctor' : 'patient';
-  
+  // This is now a static loading component without hooks.
+  // The role for the layout during loading is less critical, so we can default to 'patient'
+  // or remove role-specific elements from the loading AppLayout if needed.
   return (
-    <AppLayout role={role}>
+    <AppLayout role={'patient'}>
       <div className="space-y-8">
         <Skeleton className="h-10 w-1/4" />
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
