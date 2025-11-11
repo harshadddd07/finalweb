@@ -6,10 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Download, CreditCard, Loader2 } from 'lucide-react';
+import { Download, CreditCard, Copy, Share2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 const initialTransactions = [
   { id: "INV001", date: "2024-07-22", description: "Consultation with Dr. Sharma", amount: 500, status: "Paid" },
@@ -18,7 +20,7 @@ const initialTransactions = [
   { id: "INV004", date: "2024-08-01", description: "Cardiology Consultation", amount: 1500, status: "Pending" },
 ];
 
-const UPI_ID = 'harshadshewale31@okhdfcbank';
+const PAYEE_UPI_ID = 'harshadshewale31@okhdfcbank';
 const PAYEE_NAME = 'MediSync Pro';
 
 function BillingContent() {
@@ -29,6 +31,10 @@ function BillingContent() {
     const [transactions, setTransactions] = useState(initialTransactions);
     const [payingInvoiceId, setPayingInvoiceId] = useState<string | null>(null);
 
+    const [payerUpiId, setPayerUpiId] = useState('');
+    const [paymentAmount, setPaymentAmount] = useState('');
+    const [generatedLink, setGeneratedLink] = useState('');
+
     const handleDownload = (invoiceId: string) => {
         toast({
             title: "Invoice Downloaded",
@@ -36,9 +42,9 @@ function BillingContent() {
         });
     }
 
-    const createUpiLink = (amount: number, description: string) => {
+    const createUpiLink = (amount: number, description: string, upiId?: string) => {
       const upiUrl = new URL('upi://pay');
-      upiUrl.searchParams.set('pa', UPI_ID);
+      upiUrl.searchParams.set('pa', upiId || PAYEE_UPI_ID);
       upiUrl.searchParams.set('pn', PAYEE_NAME);
       upiUrl.searchParams.set('am', amount.toString());
       upiUrl.searchParams.set('cu', 'INR');
@@ -47,6 +53,27 @@ function BillingContent() {
     }
     
     const pendingInvoice = transactions.find(tx => tx.status === 'Pending');
+
+    const handleGenerateLink = () => {
+        if (!payerUpiId || !paymentAmount) {
+            toast({
+                variant: 'destructive',
+                title: 'Missing Information',
+                description: 'Please enter both a UPI ID and an amount.',
+            });
+            return;
+        }
+        const link = createUpiLink(Number(paymentAmount), 'MediSync Pro Bill', payerUpiId);
+        setGeneratedLink(link);
+    }
+    
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+        toast({
+            title: 'Copied to Clipboard',
+            description: 'The payment link has been copied.',
+        });
+    }
 
     return (
         <AppLayout role={role as 'patient' | 'doctor'}>
@@ -104,7 +131,7 @@ function BillingContent() {
                         </CardContent>
                     </Card>
                 </div>
-                <div>
+                <div className="space-y-8">
                    {pendingInvoice ? (
                      <Card>
                         <CardHeader>
@@ -149,6 +176,37 @@ function BillingContent() {
                         </CardContent>
                     </Card>
                    )}
+                   <Card>
+                        <CardHeader>
+                            <CardTitle>Request Payment from Others</CardTitle>
+                            <CardDescription>Generate a payment link to share with someone else.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="payer-upi">Payer's UPI ID</Label>
+                                <Input id="payer-upi" placeholder="example@upi" value={payerUpiId} onChange={(e) => setPayerUpiId(e.target.value)} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="payment-amount">Amount (₹)</Label>
+                                <Input id="payment-amount" type="number" placeholder="Enter amount" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} />
+                            </div>
+                             <Button className="w-full" onClick={handleGenerateLink}>
+                                <Share2 className="mr-2 h-4 w-4" />
+                                Generate Payment Link
+                            </Button>
+                             {generatedLink && (
+                                <div className='space-y-2 pt-2'>
+                                    <Label htmlFor='generated-link'>Share this link:</Label>
+                                     <div className="flex gap-2">
+                                        <Input id='generated-link' value={generatedLink} readOnly />
+                                        <Button variant="outline" size="icon" onClick={() => copyToClipboard(generatedLink)}>
+                                            <Copy className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
+                        </CardContent>
+                   </Card>
                 </div>
             </div>
         </AppLayout>
