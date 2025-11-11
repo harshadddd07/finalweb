@@ -3,13 +3,17 @@ import { AppLayout } from '@/components/layout/app-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 
-export default function CalendarPage() {
+function CalendarContent() {
     const [date, setDate] = useState<Date | undefined>(new Date());
+    const searchParams = useSearchParams();
+    const role = searchParams.get('role') || 'patient';
+
     return (
-        <AppLayout role="patient">
+        <AppLayout role={role as 'patient' | 'doctor'}>
             <div className="space-y-4">
                 <div className="flex items-center gap-2">
                     <CalendarIcon className="h-6 w-6" />
@@ -31,5 +35,13 @@ export default function CalendarPage() {
                 </Card>
             </div>
         </AppLayout>
+    );
+}
+
+export default function CalendarPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <CalendarContent />
+        </Suspense>
     );
 }
