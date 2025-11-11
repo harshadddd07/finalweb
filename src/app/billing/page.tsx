@@ -33,22 +33,7 @@ function BillingContent() {
 
     const [payerUpiId, setPayerUpiId] = useState('');
     const [paymentAmount, setPaymentAmount] = useState('');
-
-    const generatedLink = useMemo(() => {
-        if (!payerUpiId || !paymentAmount || Number(paymentAmount) <= 0) {
-            return '';
-        }
-        return createUpiLink(Number(paymentAmount), 'MediSync Pro Bill', payerUpiId);
-    }, [payerUpiId, paymentAmount]);
-
-
-    const handleDownload = (invoiceId: string) => {
-        toast({
-            title: "Invoice Downloaded",
-            description: `Your invoice record (${invoiceId}) has been downloaded.`,
-        });
-    }
-
+    
     const createUpiLink = (amount: number, description: string, upiId?: string) => {
       const upiUrl = new URL('upi://pay');
       upiUrl.searchParams.set('pa', upiId || PAYEE_UPI_ID);
@@ -57,6 +42,21 @@ function BillingContent() {
       upiUrl.searchParams.set('cu', 'INR');
       upiUrl.searchParams.set('tn', `Payment for ${description}`);
       return upiUrl.toString();
+    }
+
+    const generatedLink = useMemo(() => {
+        if (!payerUpiId || !paymentAmount || Number(paymentAmount) <= 0) {
+            return '';
+        }
+        return createUpiLink(Number(paymentAmount), 'MediSync Pro Bill', payerUpiId);
+    }, [payerUpiId, paymentAmount, createUpiLink]);
+
+
+    const handleDownload = (invoiceId: string) => {
+        toast({
+            title: "Invoice Downloaded",
+            description: `Your invoice record (${invoiceId}) has been downloaded.`,
+        });
     }
     
     const pendingInvoice = transactions.find(tx => tx.status === 'Pending');
